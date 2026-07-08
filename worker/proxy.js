@@ -57,9 +57,14 @@ export default {
           mainUse: first.mainPurpsCdNm || '확인 불가',
           builtYear: first.useAprDay ? Number(String(first.useAprDay).slice(0, 4)) : null,
           floors: `지상 ${first.grndFlrCnt}층${first.ugrndFlrCnt ? ` / 지하 ${first.ugrndFlrCnt}층` : ''}`,
+          groundFloors: Number(first.grndFlrCnt) || null, // 호수와 비교해 불법증축 판별
           areaM2: first.totArea ? Math.round(first.totArea * 10) / 10 : null,
           violation: first.violYn === 'Y' || first.violBldYn === '1',
           isNonResidential: /근린생활|업무|숙박|판매/.test(first.mainPurpsCdNm || ''),
+          // 소유자/신탁은 건축물대장 소유자현황 또는 등기부(유료)에서 확인.
+          // 표제부 API에는 없어 확인 불가로 두고, 신탁 판별은 소유자명에 '신탁' 포함 시 처리.
+          owner: null,
+          ownerType: null,
           recentDeals: [], // /deals 로 별도 조회
         })
       }

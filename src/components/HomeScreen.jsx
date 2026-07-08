@@ -5,6 +5,8 @@ import { formatMan } from './widgets.jsx'
 const CHECK_CHIPS = [
   { label: '위반건축물' },
   { label: '근생·업무시설' },
+  { label: '불법증축(옥탑)' },
+  { label: '신탁 소유' },
   { label: '시세비교' },
   { label: '준공연도' },
   { label: '🔒 근저당 위험도', locked: true },
@@ -34,6 +36,7 @@ export default function HomeScreen({ onDiagnose }) {
   const [suggestions, setSuggestions] = useState([])
   const [selected, setSelected] = useState(null)
   const [depositRaw, setDepositRaw] = useState('')
+  const [unit, setUnit] = useState('')
   const debounceRef = useRef(null)
 
   // 주소 자동완성 (디바운스 250ms)
@@ -65,6 +68,10 @@ export default function HomeScreen({ onDiagnose }) {
 
   const canSubmit = selected && depositMan > 0
 
+  const submit = () => {
+    if (canSubmit) onDiagnose(selected, depositMan, unit.trim())
+  }
+
   return (
     <>
       <div className="hero">
@@ -72,7 +79,7 @@ export default function HomeScreen({ onDiagnose }) {
           <span className="gray">전세 계약 전</span>
           미리 확인하세요
         </h1>
-        <span className="hero-badge">무료 진단 5가지</span>
+        <span className="hero-badge">무료 진단 6가지</span>
       </div>
       <p className="hero-sub">
         주소만 넣으면 공공데이터로 <b>위험 신호</b>를 걸러드려요
@@ -107,7 +114,20 @@ export default function HomeScreen({ onDiagnose }) {
           )}
         </div>
 
-        <label className="field-label" htmlFor="deposit-input">
+        <label className="field-label" htmlFor="unit-input">
+          동/호수 <span style={{ fontWeight: 400 }}>(선택 · 불법증축 판별에 사용)</span>
+        </label>
+        <input
+          id="unit-input"
+          className="text-input"
+          value={unit}
+          onChange={(e) => setUnit(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          placeholder="예: 301호 (건물 층수보다 높으면 경고)"
+          autoComplete="off"
+        />
+
+        <label className="field-label" htmlFor="deposit-input" style={{ marginTop: 14 }}>
           보증금 (만원)
         </label>
         <input
@@ -116,6 +136,7 @@ export default function HomeScreen({ onDiagnose }) {
           inputMode="numeric"
           value={depositRaw}
           onChange={handleDepositChange}
+          onKeyDown={(e) => e.key === 'Enter' && submit()}
           placeholder="보증금 입력 (예: 20,000)"
         />
         {depositMan > 0 && (
@@ -124,11 +145,7 @@ export default function HomeScreen({ onDiagnose }) {
           </p>
         )}
 
-        <button
-          className="primary-btn"
-          disabled={!canSubmit}
-          onClick={() => onDiagnose(selected, depositMan)}
-        >
+        <button className="primary-btn" disabled={!canSubmit} onClick={submit}>
           진단하기
         </button>
       </section>

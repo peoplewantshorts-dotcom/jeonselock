@@ -18,22 +18,27 @@ const CHECKLIST = [
   },
 ]
 
-export default function ResultScreen({ addr, depositMan, building, result, onBack, onLock }) {
+export default function ResultScreen({ addr, depositMan, unit, building, result, onBack, onLock }) {
   const { score, grade, gradeLabel, summary, flags, recentPrice } = result
 
   const baseRows = [
     { label: '주용도', value: building.mainUse, highlight: result.nonResidential },
+    { label: '소유자', value: building.owner || '확인 불가', highlight: result.trust },
     {
       label: '준공연도',
       value: `${building.builtYear}년 (${result.age}년차)`,
       highlight: flags.includes('old'),
     },
-    { label: '층수', value: building.floors },
+    {
+      label: '층수',
+      value: unit ? `${building.floors} · 신청 ${unit}` : building.floors,
+      highlight: result.floorMismatch,
+    },
     { label: '전용면적', value: `${building.areaM2}㎡` },
     {
       label: '위반건축물',
-      value: building.violation ? '등록됨' : '해당 없음',
-      highlight: building.violation,
+      value: building.violation ? '등록됨' : result.floorMismatch ? '미신고 의심' : '해당 없음',
+      highlight: building.violation || result.floorMismatch,
     },
   ]
 
@@ -78,7 +83,7 @@ export default function ResultScreen({ addr, depositMan, building, result, onBac
             <RingGauge value={score} color={grade} centerText={`${score}점`} />
             <div className="gauge-desc">
               <h3>계약 전 위험도</h3>
-              <p>공공데이터 5가지 항목에서 발견된 위험 신호를 점수로 합쳤어요.</p>
+              <p>공공데이터 여러 항목에서 발견된 위험 신호를 점수로 합쳤어요.</p>
             </div>
           </div>
         </div>
@@ -92,12 +97,34 @@ export default function ResultScreen({ addr, depositMan, building, result, onBac
       </section>
 
       {/* 경고 카드 — 조건 충족 시 */}
+      {result.floorMismatch && (
+        <section className="card warn-card">
+          <div className="warn-title">⚠️ 서류에 없는 층이에요 (불법증축 의심)</div>
+          <p className="warn-body">
+            건축물대장상 이 건물은 <b>{building.floors}</b>인데, 신청하신 호수는{' '}
+            <b>{result.unitFloor}층({unit})</b>이에요. 서류에 없는 층은 옥탑방 등을{' '}
+            <b>신고 없이 불법증축</b>한 경우가 많아요. 이런 방은 <b>전입신고·확정일자·전세대출·
+            보증보험이 모두 막히고</b>, 나중에 대장에 &lsquo;위반건축물&rsquo;로 등재되면 강제
+            철거·이행강제금 대상이 돼요.
+          </p>
+        </section>
+      )}
       {building.violation && (
         <section className="card warn-card">
           <div className="warn-title">⚠️ 위반건축물로 등록된 건물이에요</div>
           <p className="warn-body">
             불법 증축·개조로 적발된 건물이에요. <b>전입신고, 전세대출, 보증보험 가입이 막힐 수
             있고</b>, 시정될 때까지 매년 이행강제금이 부과돼요.
+          </p>
+        </section>
+      )}
+      {result.trust && (
+        <section className="card warn-card">
+          <div className="warn-title">⚠️ 소유자가 신탁회사예요</div>
+          <p className="warn-body">
+            이 집의 소유권은 <b>{building.owner}</b>에 있어요. 집주인(위탁자)이 마음대로 전세를
+            놓을 권한이 없어서, <b>신탁사 동의 없이 계약하면 보증금을 날리고 계약이 무효가 될 수
+            있어요.</b> 반드시 <b>신탁원부</b>를 확인하고 신탁사의 임대 동의를 받으세요.
           </p>
         </section>
       )}

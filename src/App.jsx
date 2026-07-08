@@ -8,20 +8,22 @@ export default function App() {
   const [screen, setScreen] = useState('home') // home | loading | result
   const [addr, setAddr] = useState(null)
   const [depositMan, setDepositMan] = useState(0)
+  const [unit, setUnit] = useState('')
   const [building, setBuilding] = useState(null)
   const [result, setResult] = useState(null)
   const [modal, setModal] = useState(null) // 'premium' | 'notify' | null
 
-  const runDiagnosis = async (selectedAddr, deposit) => {
+  const runDiagnosis = async (selectedAddr, deposit, selectedUnit = '') => {
     setScreen('loading')
     setAddr(selectedAddr)
     setDepositMan(deposit)
+    setUnit(selectedUnit)
     const [b] = await Promise.all([
       fetchBuilding(selectedAddr),
       new Promise((r) => setTimeout(r, 700)), // 로딩 상태가 보이도록 최소 시간
     ])
     setBuilding(b)
-    setResult(diagnose(b, deposit))
+    setResult(diagnose(b, deposit, selectedUnit))
     setScreen('result')
     window.scrollTo(0, 0)
   }
@@ -52,6 +54,7 @@ export default function App() {
         <ResultScreen
           addr={addr}
           depositMan={depositMan}
+          unit={unit}
           building={building}
           result={result}
           onBack={goHome}

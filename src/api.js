@@ -55,7 +55,19 @@ export async function fetchBuilding(addr) {
 // ---------- 위험 진단 (프론트 로컬 계산) ----------
 const NON_RESIDENTIAL_KEYWORDS = ['근린생활', '업무시설', '사무소', '숙박']
 
-export function diagnose(building, depositMan) {
+// 호수 → 층수 추론. "301호" → 3, "1502호" → 15, "지하101" → -1.
+// 끝 두 자리를 호(號)로 보고 앞자리를 층으로 해석한다. (예: 301 = 3층 01호)
+export function parseUnitFloor(unit) {
+  if (!unit) return null
+  const u = String(unit).trim()
+  if (/지하|지층|반지하|^b/i.test(u)) return -1
+  const digits = u.replace(/[^0-9]/g, '')
+  if (!digits) return null
+  if (digits.length <= 2) return null // "5호"처럼 층을 특정할 수 없는 경우
+  return parseInt(digits.slice(0, digits.length - 2), 10)
+}
+
+export function diagnose(building, depositMan, unit = '') {
   const flags = []
   let score = 0
 
@@ -70,6 +82,22 @@ export function diagnose(building, depositMan) {
   if (nonResidential) {
     score += 30
     flags.push('nonResidential')
+  }
+
+  // 층수 vs 호수 불일치 → 서류에 없는 층 = 미신고 불법증축(옥탑) 위반건축물
+  const unitFloor = parseUnitFloor(unit)
+  let floorMismatch = false
+  if (unitFloor != null && unitFloor > 0 && building.groundFloors && unitFloor > building.groundFloors) {
+    floorMismatch = true
+    score += 45
+    flags.push('illegalFloor')
+  }
+
+  // 신탁 소유 → 소유권이 신탁사에 있어 임대인과의 계약이 무효가 될 수 있음
+  const trust = building.ownerType === '신탁' || /신탁/.test(building.owner || '')
+  if (trust) {
+    score += 35
+    flags.push('trust')
   }
 
   // 시세 대비 보증금 (깡통 신호)
@@ -111,5 +139,18 @@ export function diagnose(building, depositMan) {
     summary = '공공데이터에서 큰 위험 신호는 발견되지 않았어요. 그래도 체크리스트는 꼭 지켜주세요.'
   }
 
-  return { score, grade, gradeLabel, summary, flags, nonResidential, depositRatio, recentPrice, age }
+  return {
+    score,
+    grade,
+    gradeLabel,
+    summary,
+    flags,
+    nonResidential,
+    depositRatio,
+    recentPrice,
+    age,
+    unitFloor,
+    floorMismatch,
+    trust,
+  }
 }
