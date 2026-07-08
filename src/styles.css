@@ -1521,20 +1521,22 @@ input {
 }
 
 /* ---------- 경고 카드 ---------- */
+/* 확인 카드 — 위험 경보(빨강)가 아니라 차분한 '중개사 확인' 톤 */
 .warn-card {
-  border: 1.5px solid rgba(229, 72, 77, 0.35);
-  background: #fffafa;
+  border: 1.5px solid rgba(232, 161, 15, 0.35);
+  background: #fffdf6;
 }
 
 .warn-title {
   display: flex;
   gap: 8px;
   align-items: flex-start;
-  font-size: 16.5px;
+  font-size: 16px;
   font-weight: 800;
-  color: var(--red);
+  color: var(--text);
   margin-bottom: 6px;
   letter-spacing: -0.3px;
+  line-height: 1.35;
 }
 
 .warn-body {

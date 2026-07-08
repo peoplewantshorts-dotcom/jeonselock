@@ -10,7 +10,7 @@ const CHECK_CHIPS = [
   { label: '신탁 소유' },
   { label: '시세비교' },
   { label: '준공연도' },
-  { label: '🔒 근저당 위험도', locked: true },
+  { label: '🔒 근저당 확인', locked: true },
   { label: '🔒 전세가율', locked: true },
 ]
 
@@ -96,7 +96,7 @@ export default function HomeScreen({ onDiagnose, onPickFeature }) {
         <span className="hero-badge">무료 진단 6가지</span>
       </div>
       <p className="hero-sub">
-        주소만 넣으면 공공데이터로 <b>위험 신호</b>를 걸러드려요
+        주소만 넣으면 공공데이터로 <b>꼭 확인할 것</b>을 짚어드려요
       </p>
 
       {/* 집 정보 입력보다 먼저 — 누구세요? 골라서 바로 들어가기 */}

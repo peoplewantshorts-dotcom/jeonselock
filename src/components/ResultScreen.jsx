@@ -18,8 +18,8 @@ function RegisterGuide({ building, result, unit }) {
       value: building.mainUse,
       danger: result.nonResidential,
       desc: result.nonResidential
-        ? "이 건물은 서류상 '주택'이 아니라 상가·사무실이에요. 전세보증보험 가입이 거절될 수 있어요."
-        : '이 건물이 법적으로 어떤 용도로 등록됐는지예요. 근린생활시설·업무시설이면 주거용이 아니라 위험해요.',
+        ? "이 건물은 서류상 '주택'이 아니라 상가·사무실이에요. 보증보험이 되는지 중개사에게 확인하세요."
+        : '이 건물이 법적으로 어떤 용도로 등록됐는지예요. 근린생활시설·업무시설이면 주거용인지 확인이 필요해요.',
     },
     {
       key: '층수',
@@ -31,7 +31,7 @@ function RegisterGuide({ building, result, unit }) {
       key: '준공연도',
       value: `${building.builtYear}년`,
       danger: result.flags.includes('old'),
-      desc: '건물을 다 지은 해예요. 오래될수록 하자·노후 위험이 커지고, 전세대출 한도가 줄기도 해요.',
+      desc: '건물을 다 지은 해예요. 오래될수록 하자·노후 가능성이 있어 확인이 필요하고, 대출 한도가 줄기도 해요.',
     },
     {
       key: '위반건축물',
@@ -96,7 +96,7 @@ function RegisterGuide({ building, result, unit }) {
       <h2 className="card-title">건축물대장, 이렇게 읽어요</h2>
       <p className="guide-intro">
         건축물대장은 이 건물의 <b>주민등록등본</b> 같은 서류예요. 정부24에서 누구나 뗄 수 있고, 여기서
-        아래 <b>5가지</b>만 봐도 위험한 집을 거를 수 있어요.
+        아래 <b>5가지</b>만 봐도 꼭 확인할 집을 걸러낼 수 있어요.
       </p>
 
       <button className="guide-toggle" onClick={() => setOpen((v) => !v)}>
@@ -184,13 +184,25 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
     window.scrollTo(0, y) // smooth이 막힌 환경 대비 즉시 이동 보장
   }
 
-  // 종합 신호등 — 항목 등급을 한눈에(참고용). 최악 등급이 신호를 결정.
+  // 종합 신호등 — '위험도'가 아니라 '중개사에게 확인이 얼마나 필요한지'. 앱은 판정하지 않음.
   const overall =
     counts.C > 0
-      ? { key: '위험', light: 'red', desc: '위험 신호(C 등급)가 있어요. 아래 경고를 꼭 확인하세요.' }
+      ? {
+          key: '확인 필요',
+          light: 'red',
+          desc: '서류상 짚어볼 점이 있어요. 아래 항목을 중개사에게 꼭 확인하세요.',
+        }
       : counts.B > 0
-        ? { key: '주의', light: 'yellow', desc: '주의가 필요한 항목(B 등급)이 있어요. 조건을 점검하세요.' }
-        : { key: '안전', light: 'green', desc: '큰 위험 신호는 보이지 않아요. 그래도 체크리스트는 지키세요.' }
+        ? {
+            key: '확인 권장',
+            light: 'yellow',
+            desc: '몇 가지는 중개사에게 확인해두면 좋아요.',
+          }
+        : {
+            key: '확인 완료',
+            light: 'green',
+            desc: '공공데이터로 확인한 항목엔 특이사항이 없어요. 나머지는 아래 체크리스트로 확인하세요.',
+          }
 
   // 임차인 입력·진단 → 중개사에게 넘어가는 정리된 요청 (overall 이후에 계산)
   const lead = {
@@ -243,7 +255,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
   ]
 
   const share = async () => {
-    const text = `[월세락] ${addr.road} 진단 리포트 — 위험신호(C) ${counts.C}개 · 주의(B) ${counts.B}개`
+    const text = `[월세락] ${addr.road} 확인 리포트 — 확인 필요 ${counts.C}건 · 확인 권장 ${counts.B}건`
     try {
       if (navigator.share) {
         await navigator.share({ title: '월세락 진단 결과', text, url: location.href })
@@ -283,37 +295,37 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         <h1 className="result-addr">{addr.road}</h1>
         {addr.buildingName && <p className="result-bname">{addr.detail}</p>}
         <p className="result-note">
-          항목별 등급을 확인하고, <b>종합 판단은 맨 아래에서 직접</b> 내려보세요.
+          공공데이터로 <b>확인한 사실</b>이에요. 판단이 필요한 건 <b>중개사에게 확인</b>하세요.
         </p>
       </div>
 
-      {/* 종합 신호등 (참고용 한눈에 보기) */}
+      {/* 확인 필요도 신호등 (위험 판정이 아니라 '중개사 확인이 얼마나 필요한지') */}
       <section className="card">
-        <span className="cat-pill cat-mint">종합 신호</span>
+        <span className="cat-pill cat-mint">확인 요약</span>
         <div className="signal-main">
-          <div className="traffic" role="img" aria-label={`종합 신호 ${overall.key}`}>
+          <div className="traffic" role="img" aria-label={`확인 신호 ${overall.key}`}>
             <div className="tl-housing">
               <span className={`tl-lamp red ${overall.light === 'red' ? 'on' : ''}`} />
               <span className={`tl-lamp yellow ${overall.light === 'yellow' ? 'on' : ''}`} />
               <span className={`tl-lamp green ${overall.light === 'green' ? 'on' : ''}`} />
             </div>
             <div className="tl-labels">
-              <span className={`tl-lbl red ${overall.light === 'red' ? 'on' : ''}`}>위험</span>
-              <span className={`tl-lbl yellow ${overall.light === 'yellow' ? 'on' : ''}`}>주의</span>
-              <span className={`tl-lbl green ${overall.light === 'green' ? 'on' : ''}`}>안전</span>
+              <span className={`tl-lbl red ${overall.light === 'red' ? 'on' : ''}`}>확인 필요</span>
+              <span className={`tl-lbl yellow ${overall.light === 'yellow' ? 'on' : ''}`}>확인 권장</span>
+              <span className={`tl-lbl green ${overall.light === 'green' ? 'on' : ''}`}>확인 완료</span>
             </div>
           </div>
           <div className="signal-verdict">
             <p className="sv-desc">{overall.desc}</p>
             <p className="sv-counts">
-              위험 {counts.C} · 주의 {counts.B} · 양호 {counts.A} · 안전 {counts.S}
+              확인 필요 {counts.C} · 확인 권장 {counts.B} · 양호 {counts.A} · 이상 없음 {counts.S}
             </p>
           </div>
         </div>
         <p className="signal-note">
-          앱이 매긴 <b>참고 신호</b>예요.
+          앱은 <b>공공데이터로 확인만</b> 해요.
           <br />
-          최종 판단은 <b>맨 아래에서 직접</b> 내려주세요.
+          위험 여부·계약 판단은 <b>중개사·본인 몫</b>이에요.
         </p>
       </section>
 
@@ -335,16 +347,16 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         <h2 className="card-title">항목별로 확인하세요</h2>
         <div className="grade-legend">
           <span>
-            <b className="lg lg-S">S</b> 안전
+            <b className="lg lg-S">S</b> 이상 없음
           </span>
           <span>
             <b className="lg lg-A">A</b> 양호
           </span>
           <span>
-            <b className="lg lg-B">B</b> 주의
+            <b className="lg lg-B">B</b> 확인 권장
           </span>
           <span>
-            <b className="lg lg-C">C</b> 위험 신호
+            <b className="lg lg-C">C</b> 확인 필요
           </span>
         </div>
         <div className="grade-list">
@@ -359,60 +371,57 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           ))}
         </div>
         <p className="grade-tip">
-          <b>종합 위험도는 앱이 정하지 않아요.</b> 각 등급과 아래 상세를 보고, 이 섹션 끝의
-          체크리스트로 직접 판단해보세요.
+          <b>위험 여부는 앱이 정하지 않아요.</b> 공공데이터로 확인만 하고, 판단이 필요한 항목은
+          중개사에게 확인하세요.
         </p>
       </section>
 
-      {/* 경고 카드 — 조건 충족 시 */}
+      {/* 확인 카드 — 공공데이터로 확인된 사실 + 중개사 확인 라우팅 (판정 아님) */}
       {result.floorMismatch && (
         <section className="card warn-card">
-          <div className="warn-title">⚠️ 서류에 없는 층이에요 (불법증축 의심)</div>
+          <div className="warn-title">🔎 서류에 없는 층이에요 — 중개사에게 확인하세요</div>
           <p className="warn-body">
             건축물대장상 이 건물은 <b>{building.floors}</b>인데, 신청하신 호수는{' '}
-            <b>{result.unitFloor}층({unit})</b>이에요. 서류에 없는 층은 옥탑방 등을{' '}
-            <b>신고 없이 불법증축</b>한 경우가 많아요. 벌금(이행강제금)은 집주인이 무는 거라
-            세입자가 낼 돈은 없지만, 세입자에겐 <b>전입신고·확정일자·전세대출·전세보증보험이 모두
-            막히는</b> 게 진짜 문제예요.
+            <b>{result.unitFloor}층({unit})</b>이에요. 서류에 없는 층이라{' '}
+            <b>실제 상태와 적법 여부를 중개사·현장에서 꼭 확인</b>하세요. 이런 경우 전입신고·확정일자·
+            대출·보증보험에 제약이 생길 수 있어요.
           </p>
         </section>
       )}
       {building.violation && (
         <section className="card warn-card">
-          <div className="warn-title">⚠️ 위반건축물로 등록된 건물이에요</div>
+          <div className="warn-title">🔎 건축물대장에 위반건축물로 등록돼 있어요</div>
           <p className="warn-body">
-            불법 증축·개조로 적발된 건물이에요. <b>이행강제금(벌금)은 집주인이 무는 거라 세입자가
-            낼 돈은 없어요.</b> 하지만 세입자에겐 더 큰 문제가 있어요 — <b>전세대출·전세보증보험
-            가입이 막히고, 전입신고에도 불이익</b>이 생길 수 있어요.
+            공공데이터(건축물대장)에 위반건축물로 표시돼 있어요. 이런 경우 전세대출·보증보험·전입신고에
+            제약이 생길 수 있으니, <b>해소 계획을 중개사에게 확인</b>하세요. (이행강제금은 집주인이
+            부담해요.)
           </p>
         </section>
       )}
       {result.trust && (
         <section className="card warn-card">
-          <div className="warn-title">⚠️ 소유자가 신탁회사예요</div>
+          <div className="warn-title">🔎 소유자가 신탁회사예요 — 중개사에게 확인하세요</div>
           <p className="warn-body">
-            이 집의 소유권은 <b>{building.owner}</b>에 있어요. 집주인(위탁자)이 마음대로 전세를
-            놓을 권한이 없어서, <b>신탁사 동의 없이 계약하면 보증금을 날리고 계약이 무효가 될 수
-            있어요.</b> 반드시 <b>신탁원부</b>를 확인하고 신탁사의 임대 동의를 받으세요.
+            등기부상 소유권이 <b>{building.owner}</b>에 있어요. 이 경우 신탁사의 임대 동의가 필요할 수
+            있어요. <b>신탁원부와 임대 동의 여부를 중개사에게 확인</b>하세요.
           </p>
         </section>
       )}
       {result.nonResidential && (
         <section className="card warn-card">
-          <div className="warn-title">⚠️ 이 건물은 &lsquo;주택&rsquo;이 아니에요</div>
+          <div className="warn-title">🔎 서류상 &lsquo;주택&rsquo;이 아니에요</div>
           <p className="warn-body">
-            서류상 용도가 <b>{building.mainUse}</b>이에요. 사무실·상가로 등록된 집은{' '}
-            <b>전세보증보험 가입이 거절될 수 있고</b>, 문제가 생겨도 주택 세입자 보호를 온전히
-            받기 어려워요.
+            건축물대장 용도가 <b>{building.mainUse}</b>예요. 주거용으로 쓸 수 있는지, 보증보험 가입이
+            되는지 <b>중개사에게 확인</b>하세요.
           </p>
         </section>
       )}
       {flags.includes('overpriced') && (
         <section className="card warn-card">
-          <div className="warn-title">⚠️ 보증금이 최근 시세보다 높아요</div>
+          <div className="warn-title">🔎 보증금이 최근 실거래가보다 높아요</div>
           <p className="warn-body">
-            집이 경매로 넘어가면 <b>보증금을 전부 돌려받지 못할 수 있는</b> 전형적인 깡통전세
-            신호예요. 보증금 조정이나 월세 전환을 고민해보세요.
+            국토부 실거래가 기준 최근 거래보다 보증금이 높아요. <b>적정 보증금인지, 보증금 보호
+            방법을 중개사에게 확인</b>하세요.
           </p>
         </section>
       )}
@@ -460,10 +469,10 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         </p>
       </section>
 
-      {/* 🔒 근저당 위험도 */}
+      {/* 🔒 근저당 확인 */}
       <section className="card locked-card">
         <div className="locked-content">
-          <span className="cat-pill cat-purple">근저당 위험도</span>
+          <span className="cat-pill cat-purple">근저당 확인</span>
           <h2 className="card-title">빚 + 내 보증금, 집값을 넘나요?</h2>
           <div className="innerbox">
             <div className="gauge-row">
@@ -477,7 +486,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         </div>
         <div className="lock-overlay">
           <span className="lock-icon">🔒</span>
-          <span className="lock-title">근저당 위험도</span>
+          <span className="lock-title">근저당 확인</span>
           <span className="lock-desc">
             등기부등본의 근저당(집주인 빚)까지 합쳐 경매 시 내 보증금이 안전한지 계산해드려요.
           </span>
@@ -525,7 +534,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       <section className="card">
         <h2 className="card-title">부동산에 이것만 물어보세요</h2>
         <p className="self-desc">
-          어려운 건 몰라도 괜찮아요. <b>아래 {SELF_CHECK.length}가지만 부동산에 확인</b>하면 큰 위험은
+          어려운 건 몰라도 괜찮아요. <b>아래 {SELF_CHECK.length}가지만 부동산에 확인</b>하면 큰 문제는
           걸러져요. 하나씩 체크하면서 스스로 판단해보세요.
         </p>
         <div className="note-check">
