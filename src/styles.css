@@ -628,7 +628,97 @@ input {
   line-height: 1.5;
 }
 
-/* ---------- 최상단 3가지 기능 메뉴 ---------- */
+/* ---------- 홈 메인 카테고리 (크고 차분하게) ---------- */
+.cat-guide {
+  margin: 6px 20px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+.cat-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 16px 22px;
+}
+
+.cat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  text-align: left;
+  transition:
+    border-color 0.14s,
+    transform 0.06s;
+}
+
+.cat-card:active {
+  transform: scale(0.99);
+}
+
+.cat-card:hover {
+  border-color: rgba(27, 197, 163, 0.55);
+}
+
+.cat-num {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--mint-soft);
+  color: #0e8f76;
+  font-size: 19px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cat-name {
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.cat-sub {
+  font-size: 12.5px;
+  color: var(--sub);
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.cat-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.cat-arrow {
+  font-size: 22px;
+  font-weight: 700;
+  color: #c4c9ce;
+  line-height: 1;
+}
+
+/* ---------- 결과 상단 3가지 기능 메뉴 ---------- */
 .menu-guide {
   margin: 4px 20px 8px;
   font-size: 13px;

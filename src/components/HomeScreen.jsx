@@ -100,13 +100,21 @@ export default function HomeScreen({ onDiagnose, onPickFeature }) {
       </p>
 
       {/* 집 정보 입력보다 먼저 — 누구세요? 골라서 바로 들어가기 */}
-      <p className="menu-guide">누구세요? 골라서 바로 시작하세요</p>
-      <div className="menu-bar">
+      <p className="cat-guide">누구세요? 골라서 바로 시작하세요</p>
+      <div className="cat-menu">
         {FEATURES.map((f) => (
-          <button key={f.n} className="menu-item" onClick={() => pickFeature(f)}>
-            <span className="menu-num">{f.n}</span>
-            <span className={`menu-tag who-${f.tag}`}>{f.who}</span>
-            <span className="menu-name">{f.short}</span>
+          <button key={f.n} className="cat-card" onClick={() => pickFeature(f)}>
+            <span className="cat-num">{f.n}</span>
+            <span className="cat-body">
+              <span className="cat-name">{f.short}</span>
+              <span className="cat-sub">{f.sub}</span>
+            </span>
+            <span className="cat-right">
+              <span className={`who-tag who-${f.tag}`}>{f.who}</span>
+              <span className="cat-arrow" aria-hidden="true">
+                ›
+              </span>
+            </span>
           </button>
         ))}
       </div>
