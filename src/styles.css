@@ -622,6 +622,234 @@ input {
   line-height: 1.5;
 }
 
+/* ---------- 종합 신호등 ---------- */
+.signal-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.traffic-light {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px;
+  background: #2b2f33;
+  border-radius: 18px;
+  flex-shrink: 0;
+}
+
+.traffic-light .lamp {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #454b50;
+  opacity: 0.32;
+  transition: opacity 0.15s;
+}
+
+.traffic-light .lamp.on {
+  opacity: 1;
+}
+
+.traffic-light .lamp.red.on {
+  background: var(--red);
+  box-shadow: 0 0 12px rgba(229, 72, 77, 0.85);
+}
+
+.traffic-light .lamp.yellow.on {
+  background: var(--amber);
+  box-shadow: 0 0 12px rgba(232, 161, 15, 0.85);
+}
+
+.traffic-light .lamp.green.on {
+  background: var(--green);
+  box-shadow: 0 0 12px rgba(24, 160, 88, 0.85);
+}
+
+.signal-desc {
+  min-width: 0;
+  flex: 1;
+}
+
+.signal-desc h3 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 5px;
+}
+
+.signal-desc h3.sig-red {
+  color: var(--red);
+}
+.signal-desc h3.sig-yellow {
+  color: var(--amber);
+}
+.signal-desc h3.sig-green {
+  color: var(--green);
+}
+
+.signal-desc > p {
+  font-size: 14px;
+  color: var(--sub);
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.signal-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.signal-counts .sc {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.signal-counts .sc.c {
+  background: var(--red);
+}
+.signal-counts .sc.b {
+  background: var(--amber);
+}
+.signal-counts .sc.a {
+  background: var(--mint);
+}
+.signal-counts .sc.s {
+  background: var(--green);
+}
+
+.signal-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--inner);
+  font-size: 13px;
+  color: #4b5157;
+  line-height: 1.5;
+}
+
+.signal-note b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ---------- 공인중개사 원스톱 발급 ---------- */
+.agent-desc {
+  font-size: 14.5px;
+  color: #4b5157;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.agent-desc b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.agent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.agent-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid #e4e7ea;
+  background: var(--card);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.agent-item.on {
+  border-color: rgba(27, 197, 163, 0.55);
+  background: var(--mint-soft);
+}
+
+.agent-item input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.agent-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 2px solid #cdd2d7;
+  background: var(--card);
+  position: relative;
+  transition: all 0.12s;
+}
+
+.agent-item.on .agent-check {
+  background: var(--mint);
+  border-color: var(--mint);
+}
+
+.agent-item.on .agent-check::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+
+.agent-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.agent-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.agent-note {
+  font-size: 12.5px;
+  color: var(--sub);
+  margin-top: 2px;
+}
+
+.agent-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  background: var(--text);
+  color: #fff;
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.agent-btn:disabled {
+  background: #c9ccd0;
+  cursor: default;
+}
+
+.agent-caveat {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
 /* ---------- 건축물대장 쉬운 해설 코너 ---------- */
 .guide-intro {
   font-size: 14.5px;
@@ -792,19 +1020,22 @@ input {
   color: var(--text);
 }
 
-/* ---------- 비교 막대 ---------- */
+/* ---------- 비교 막대 (세로 스택: 막대 위 / 지표 아래 → 가로 넘침 방지) ---------- */
 .bars-box {
   display: flex;
-  align-items: flex-end;
-  gap: 26px;
-  padding: 6px 4px 0;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
 }
 
 .bars-chart {
   display: flex;
   align-items: flex-end;
-  gap: 22px;
-  flex-shrink: 0;
+  justify-content: center;
+  gap: 28px;
+  width: 100%;
+  padding-top: 4px;
 }
 
 .bar-col {
@@ -812,12 +1043,14 @@ input {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  min-width: 0;
 }
 
 .bar-value {
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: -0.3px;
+  white-space: nowrap;
 }
 
 .bar-value.mint {
@@ -825,7 +1058,7 @@ input {
 }
 
 .bar-shape {
-  width: 44px;
+  width: 46px;
   border-radius: 10px;
   background: #e2e5e8;
 }
@@ -841,20 +1074,27 @@ input {
 }
 
 .bars-side {
-  flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  width: 100%;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.bars-side > div {
+  min-width: 0;
 }
 
 .bars-side .metric-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--sub);
   margin-bottom: 3px;
 }
 
 .bars-side .metric-value {
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 800;
   letter-spacing: -0.4px;
 }

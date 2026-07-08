@@ -1,6 +1,72 @@
 import { useState } from 'react'
 import { RingGauge, CompareBars, DataTable, formatMan } from './widgets.jsx'
 
+// 공인중개사용 — 원하는 서류만 체크해서 한 번에 발급처로 이동.
+// 강제로 전부 뽑지 않고 사용자가 고른 것만 연다.
+const AGENT_DOCS = [
+  {
+    id: 'explain',
+    name: '중개대상물 확인·설명서',
+    note: '중개사가 작성·교부하는 서식 (무료)',
+    url: 'https://www.gov.kr/search?srhQuery=%EC%A4%91%EA%B0%9C%EB%8C%80%EC%83%81%EB%AC%BC+%ED%99%95%EC%9D%B8%EC%84%A4%EB%AA%85%EC%84%9C',
+  },
+  {
+    id: 'registry',
+    name: '등기부등본 (등기사항전부증명서)',
+    note: '대법원 인터넷등기소 · 열람 700원/발급 1,000원',
+    url: 'https://www.iros.go.kr',
+  },
+  {
+    id: 'ledger',
+    name: '건축물대장',
+    note: '정부24 · 무료',
+    url: 'https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=15000000098',
+  },
+]
+
+function AgentIssueCard({ addr, docSel, setDocSel }) {
+  const selected = AGENT_DOCS.filter((d) => docSel[d.id])
+
+  const openSelected = () => {
+    // 체크한 서류만 순서대로 발급처 새 탭으로 연다.
+    selected.forEach((d, i) => setTimeout(() => window.open(d.url, '_blank', 'noopener'), i * 400))
+  }
+
+  return (
+    <section className="card">
+      <span className="cat-pill cat-purple">공인중개사용</span>
+      <h2 className="card-title">서류 원스톱 발급</h2>
+      <p className="agent-desc">
+        필요한 서류만 <b>체크</b>해서 한 번에 발급처로 이동해요. 이 주소는{' '}
+        <b>{addr.road}</b>입니다.
+      </p>
+      <div className="agent-list">
+        {AGENT_DOCS.map((d) => (
+          <label key={d.id} className={`agent-item ${docSel[d.id] ? 'on' : ''}`}>
+            <input
+              type="checkbox"
+              checked={!!docSel[d.id]}
+              onChange={(e) => setDocSel((s) => ({ ...s, [d.id]: e.target.checked }))}
+            />
+            <span className="agent-check" aria-hidden="true" />
+            <span className="agent-text">
+              <span className="agent-name">{d.name}</span>
+              <span className="agent-note">{d.note}</span>
+            </span>
+          </label>
+        ))}
+      </div>
+      <button className="agent-btn" disabled={selected.length === 0} onClick={openSelected}>
+        {selected.length > 0 ? `선택한 ${selected.length}개 서류 발급하기` : '발급할 서류를 선택하세요'}
+      </button>
+      <p className="agent-caveat">
+        등기부는 대법원, 확인·설명서는 서식 작성용이라 각 발급처로 연결돼요. 건축물대장만 무료 즉시
+        열람이에요.
+      </p>
+    </section>
+  )
+}
+
 // 건축물대장 각 항목이 뭘 뜻하는지 대학생 눈높이로 풀어주는 코너.
 // 대장에서 따온 실제 값(building) 옆에 한 줄 해설을 붙이고,
 // 마지막에 '지금 이 집' 판정(층수-호수 대조)을 콕 집어준다.
@@ -138,6 +204,15 @@ const CHECKLIST = [
 export default function ResultScreen({ addr, depositMan, unit, building, result, onBack, onLock }) {
   const { grades, counts, flags, recentPrice } = result
   const [myVerdict, setMyVerdict] = useState(null) // 사용자가 스스로 내리는 종합 판단
+  const [docSel, setDocSel] = useState({ explain: true, registry: true, ledger: true })
+
+  // 종합 신호등 — 항목 등급을 한눈에(참고용). 최악 등급이 신호를 결정.
+  const overall =
+    counts.C > 0
+      ? { key: '위험', light: 'red', desc: '위험 신호(C 등급)가 있어요. 아래 경고를 꼭 확인하세요.' }
+      : counts.B > 0
+        ? { key: '주의', light: 'yellow', desc: '주의가 필요한 항목(B 등급)이 있어요. 조건을 점검하세요.' }
+        : { key: '안전', light: 'green', desc: '큰 위험 신호는 보이지 않아요. 그래도 체크리스트는 지키세요.' }
 
   const baseRows = [
     { label: '주용도', value: building.mainUse, highlight: result.nonResidential },
@@ -192,6 +267,31 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           항목별 등급을 확인하고, <b>종합 판단은 맨 아래에서 직접</b> 내려보세요.
         </p>
       </div>
+
+      {/* 종합 신호등 (참고용 한눈에 보기) */}
+      <section className="card">
+        <span className="cat-pill cat-mint">종합 신호</span>
+        <div className="signal-row">
+          <div className="traffic-light" role="img" aria-label={`종합 신호 ${overall.key}`}>
+            <span className={`lamp red ${overall.light === 'red' ? 'on' : ''}`} />
+            <span className={`lamp yellow ${overall.light === 'yellow' ? 'on' : ''}`} />
+            <span className={`lamp green ${overall.light === 'green' ? 'on' : ''}`} />
+          </div>
+          <div className="signal-desc">
+            <h3 className={`sig-${overall.light}`}>종합 신호 · {overall.key}</h3>
+            <p>{overall.desc}</p>
+            <div className="signal-counts">
+              <span className="sc c">위험 C {counts.C}</span>
+              <span className="sc b">주의 B {counts.B}</span>
+              <span className="sc a">양호 A {counts.A}</span>
+              <span className="sc s">안전 S {counts.S}</span>
+            </div>
+          </div>
+        </div>
+        <p className="signal-note">
+          앱이 매긴 <b>참고 신호</b>예요. 최종 위험도 판단은 맨 아래에서 직접 내려주세요.
+        </p>
+      </section>
 
       {/* 항목별 등급 (앱은 종합 위험도를 선고하지 않음) */}
       <section className="card">
@@ -319,7 +419,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
               </div>
               <div>
                 <div className="metric-label">최근 거래</div>
-                <div className="metric-value" style={{ fontSize: 16, whiteSpace: 'nowrap' }}>
+                <div className="metric-value" style={{ fontSize: 16 }}>
                   {building.recentDeals[0]
                     ? `${building.recentDeals[0].date} · ${building.recentDeals[0].type}`
                     : '-'}
@@ -441,6 +541,9 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           <p className="self-hint">아직 판단 전이에요. 참고 자료로만 쓰고, 계약 전 전문가와 상담하세요.</p>
         )}
       </section>
+
+      {/* 공인중개사용 — 원하는 서류만 체크해서 원스톱 발급 */}
+      <AgentIssueCard addr={addr} docSel={docSel} setDocSel={setDocSel} />
 
       {/* 하단 버튼 */}
       <div className="action-row">
