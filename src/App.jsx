@@ -2,10 +2,11 @@ import { useState } from 'react'
 import Header from './components/Header.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
+import AgentScreen from './components/AgentScreen.jsx'
 import { fetchBuilding, diagnose } from './api.js'
 
 export default function App() {
-  const [screen, setScreen] = useState('home') // home | loading | result
+  const [screen, setScreen] = useState('home') // home | loading | result | agent
   const [addr, setAddr] = useState(null)
   const [depositMan, setDepositMan] = useState(0)
   const [unit, setUnit] = useState('')
@@ -37,7 +38,19 @@ export default function App() {
     <div className="app">
       <Header onNotify={() => setModal('notify')} />
 
-      {screen === 'home' && <HomeScreen onDiagnose={runDiagnosis} />}
+      {screen === 'home' && (
+        <HomeScreen
+          onDiagnose={runDiagnosis}
+          onPickFeature={(tag) => {
+            if (tag === 'agent') {
+              setScreen('agent')
+              window.scrollTo(0, 0)
+            }
+          }}
+        />
+      )}
+
+      {screen === 'agent' && <AgentScreen onBack={goHome} />}
 
       {screen === 'loading' && (
         <div className="loading-wrap">
