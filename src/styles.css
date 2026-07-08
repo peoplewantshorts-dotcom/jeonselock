@@ -675,6 +675,15 @@ input {
   justify-content: center;
 }
 
+.menu-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
 .menu-name {
   font-size: 12.5px;
   font-weight: 700;
@@ -683,6 +692,36 @@ input {
   text-align: center;
   color: var(--text);
   word-break: keep-all;
+}
+
+/* 대상(누구를 위한 기능인지) 태그 색 */
+.who-consumer {
+  background: var(--mint-soft);
+  color: #0e8f76;
+}
+.who-agent {
+  background: #efe9fb;
+  color: #6b46c1;
+}
+.who-both {
+  background: #eef0f2;
+  color: #6a7178;
+}
+
+.feature-htop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.who-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
 }
 
 /* ---------- 기능 섹션 헤더 ---------- */

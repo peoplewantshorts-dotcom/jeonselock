@@ -211,37 +211,47 @@ const SELF_CHECK = [
   },
 ]
 
-// 결과 리포트의 3가지 메인 기능 (맨 위 코너 + 섹션 헤더)
+// 결과 리포트의 3가지 메인 기능 (맨 위 메뉴 + 섹션 헤더)
+// who: 이 기능이 누구에게 필요한지 (소비자 / 중개사 / 둘 다)
 const FEATURES = [
   {
     n: 1,
     id: 'feat-1',
     name: '건축물대장 쉽게 읽기',
-    desc: '건축물대장 = 건물의 신분증. 어려운 말을 한 줄로',
-    short: '건물의 신분증 읽기',
+    desc: '건축물대장 = 건물의 기본정보가 적힌 서류. 어려운 말을 쉽게',
+    short: '건물 정보 쉽게 읽기',
+    who: '소비자·중개사',
+    tag: 'both',
   },
   {
     n: 2,
     id: 'feat-2',
     name: '등급 확인 & 직접 판단',
-    desc: 'S·A·B·C 보고 스스로',
+    desc: 'S·A·B·C 보고 스스로 판단',
     short: '등급 보고 직접 판단',
+    who: '소비자',
+    tag: 'consumer',
   },
   {
     n: 3,
     id: 'feat-3',
-    name: '중개사 원클릭 발급',
-    desc: '원하는 서류만 골라',
+    name: '서류 원클릭 발급',
+    desc: '원하는 서류만 골라 한 번에',
     short: '서류 원클릭 발급',
+    who: '중개사',
+    tag: 'agent',
   },
 ]
 
-function FeatureHead({ n, id, name, desc }) {
+function FeatureHead({ n, id, name, desc, who, tag }) {
   return (
     <div className="feature-head" id={id}>
       <span className="feature-num">{n}</span>
       <div className="feature-htext">
-        <h2>{name}</h2>
+        <div className="feature-htop">
+          <h2>{name}</h2>
+          <span className={`who-tag who-${tag}`}>{who}</span>
+        </div>
         <p>{desc}</p>
       </div>
     </div>
@@ -322,6 +332,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         {FEATURES.map((f) => (
           <button key={f.n} className="menu-item" onClick={() => scrollToId(f.id)}>
             <span className="menu-num">{f.n}</span>
+            <span className={`menu-tag who-${f.tag}`}>{f.who}</span>
             <span className="menu-name">{f.short}</span>
           </button>
         ))}
