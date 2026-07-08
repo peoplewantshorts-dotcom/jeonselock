@@ -439,6 +439,120 @@ input {
   line-height: 1.55;
 }
 
+/* ---------- 건축물대장 쉬운 해설 코너 ---------- */
+.guide-intro {
+  font-size: 14.5px;
+  color: #4b5157;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.guide-intro b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.guide-toggle {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(27, 197, 163, 0.4);
+  background: var(--mint-soft);
+  color: #0e8f76;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.guide-preview {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guide-field {
+  background: var(--inner);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.guide-field-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.guide-field-head .g-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sub);
+}
+
+.guide-field-head .g-value {
+  font-size: 15.5px;
+  font-weight: 700;
+  text-align: right;
+  letter-spacing: -0.2px;
+}
+
+.guide-field-head .g-value.danger {
+  background: var(--hl);
+  padding: 1px 7px;
+  border-radius: 6px;
+  color: var(--text);
+}
+
+.guide-field .g-desc {
+  font-size: 13.5px;
+  color: #6a7178;
+  line-height: 1.5;
+}
+
+.guide-callout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding: 15px 16px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.guide-callout .gc-icon {
+  font-size: 18px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.guide-callout p {
+  color: #4b5157;
+}
+
+.guide-callout p b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.guide-callout.danger {
+  background: var(--red-soft);
+  border: 1.5px solid rgba(229, 72, 77, 0.35);
+}
+
+.guide-callout.danger p b {
+  color: var(--red);
+}
+
+.guide-callout.ok {
+  background: var(--green-soft);
+}
+
+.guide-callout.info {
+  background: var(--inner);
+}
+
 /* ---------- 데이터 표 ---------- */
 .data-table {
   width: 100%;

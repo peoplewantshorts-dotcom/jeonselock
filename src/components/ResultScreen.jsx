@@ -1,7 +1,127 @@
+import { useState } from 'react'
 import { RingGauge, CompareBars, DataTable, formatMan } from './widgets.jsx'
 
 const GRADE_CLASS = { safe: 'grade-safe', warn: 'grade-warn', danger: 'grade-danger' }
 const GRADE_DOT = { safe: '🟢', warn: '🟡', danger: '🔴' }
+
+// 건축물대장 각 항목이 뭘 뜻하는지 대학생 눈높이로 풀어주는 코너.
+// 대장에서 따온 실제 값(building) 옆에 한 줄 해설을 붙이고,
+// 마지막에 '지금 이 집' 판정(층수-호수 대조)을 콕 집어준다.
+function RegisterGuide({ building, result, unit }) {
+  const [open, setOpen] = useState(false)
+
+  const fields = [
+    {
+      key: '주용도',
+      value: building.mainUse,
+      danger: result.nonResidential,
+      desc: result.nonResidential
+        ? "이 건물은 서류상 '주택'이 아니라 상가·사무실이에요. 전세보증보험 가입이 거절될 수 있어요."
+        : '이 건물이 법적으로 어떤 용도로 등록됐는지예요. 근린생활시설·업무시설이면 주거용이 아니라 위험해요.',
+    },
+    {
+      key: '층수',
+      value: building.floors,
+      danger: result.floorMismatch,
+      desc: '건물이 지상 몇 층까지 있는지예요. 내 호수의 층이 이 숫자보다 높으면 서류에 없는 층 = 불법증축이에요.',
+    },
+    {
+      key: '준공연도',
+      value: `${building.builtYear}년`,
+      danger: result.flags.includes('old'),
+      desc: '건물을 다 지은 해예요. 오래될수록 하자·노후 위험이 커지고, 전세대출 한도가 줄기도 해요.',
+    },
+    {
+      key: '위반건축물',
+      value: building.violation ? '등록됨' : result.floorMismatch ? '미신고 의심' : '해당 없음',
+      danger: building.violation || result.floorMismatch,
+      desc: "대장 맨 위에 노란 글씨로 '위반건축물' 도장이 찍혀 있으면 전입신고·대출·보증보험이 다 막혀요.",
+    },
+    {
+      key: '소유자',
+      value: building.owner || '확인 불가',
+      danger: result.trust,
+      desc: result.trust
+        ? '소유자가 신탁회사예요. 집주인이 마음대로 전세를 놓을 수 없어서, 신탁사 동의 없이 계약하면 무효가 될 수 있어요.'
+        : '진짜 집주인이 누구인지예요. 계약 상대가 대장·등기부의 소유자와 같은 사람인지 꼭 확인하세요.',
+    },
+  ]
+
+  // '지금 이 집' 판정 (층수 vs 호수)
+  let verdict
+  if (unit && result.floorMismatch) {
+    verdict = {
+      tone: 'danger',
+      icon: '🚨',
+      text: (
+        <>
+          지금 이 집은 대장상 <b>{building.floors}</b>인데, 신청하신 호수는{' '}
+          <b>
+            {result.unitFloor}층({unit})
+          </b>
+          이에요. <b>{result.unitFloor}층은 건축물대장에 없는 층</b>이라, 아직 신고만 안 됐을 뿐{' '}
+          <b>사실상 위반건축물</b>이에요.
+        </>
+      ),
+    }
+  } else if (unit && result.unitFloor > 0) {
+    verdict = {
+      tone: 'ok',
+      icon: '✅',
+      text: (
+        <>
+          신청하신 호수 <b>{unit}</b> — 대장상 층수(<b>{building.floors}</b>) 안에 있어요. 층수
+          기준으로는 불법증축 신호가 없어요.
+        </>
+      ),
+    }
+  } else {
+    verdict = {
+      tone: 'info',
+      icon: '💡',
+      text: (
+        <>
+          <b>동/호수</b>를 함께 입력하면, 그 호수가 대장에 실제로 있는 층인지 바로 대조해드려요. (예:
+          대장이 2층인데 301호면 서류에 없는 층)
+        </>
+      ),
+    }
+  }
+
+  return (
+    <section className="card">
+      <span className="cat-pill cat-mint">건축물대장</span>
+      <h2 className="card-title">건축물대장, 이렇게 읽어요</h2>
+      <p className="guide-intro">
+        건축물대장은 이 건물의 <b>주민등록등본</b> 같은 서류예요. 정부24에서 누구나 뗄 수 있고, 여기서
+        아래 <b>5가지</b>만 봐도 위험한 집을 거를 수 있어요.
+      </p>
+
+      <button className="guide-toggle" onClick={() => setOpen((v) => !v)}>
+        {open ? '접기 ▲' : '📄 대장 미리보기 · 쉽게 풀어보기 ▼'}
+      </button>
+
+      {open && (
+        <div className="guide-preview">
+          {fields.map((f) => (
+            <div className="guide-field" key={f.key}>
+              <div className="guide-field-head">
+                <span className="g-label">{f.key}</span>
+                <span className={`g-value ${f.danger ? 'danger' : ''}`}>{f.value}</span>
+              </div>
+              <p className="g-desc">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className={`guide-callout ${verdict.tone}`}>
+        <span className="gc-icon">{verdict.icon}</span>
+        <p>{verdict.text}</p>
+      </div>
+    </section>
+  )
+}
 
 const CHECKLIST = [
   {
@@ -95,6 +215,9 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         <h2 className="card-title">건축물대장 기본정보</h2>
         <DataTable rows={baseRows} />
       </section>
+
+      {/* 건축물대장 쉬운 해설 + 이 집 판정 */}
+      <RegisterGuide building={building} result={result} unit={unit} />
 
       {/* 경고 카드 — 조건 충족 시 */}
       {result.floorMismatch && (
