@@ -271,25 +271,28 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       {/* 종합 신호등 (참고용 한눈에 보기) */}
       <section className="card">
         <span className="cat-pill cat-mint">종합 신호</span>
-        <div className="signal-row">
-          <div className="traffic-light" role="img" aria-label={`종합 신호 ${overall.key}`}>
-            <span className={`lamp red ${overall.light === 'red' ? 'on' : ''}`} />
-            <span className={`lamp yellow ${overall.light === 'yellow' ? 'on' : ''}`} />
-            <span className={`lamp green ${overall.light === 'green' ? 'on' : ''}`} />
-          </div>
-          <div className="signal-desc">
-            <h3 className={`sig-${overall.light}`}>종합 신호 · {overall.key}</h3>
-            <p>{overall.desc}</p>
-            <div className="signal-counts">
-              <span className="sc c">위험 C {counts.C}</span>
-              <span className="sc b">주의 B {counts.B}</span>
-              <span className="sc a">양호 A {counts.A}</span>
-              <span className="sc s">안전 S {counts.S}</span>
+        <div className="signal-main">
+          <div className="traffic" role="img" aria-label={`종합 신호 ${overall.key}`}>
+            <div className="tl-housing">
+              <span className={`tl-lamp red ${overall.light === 'red' ? 'on' : ''}`} />
+              <span className={`tl-lamp yellow ${overall.light === 'yellow' ? 'on' : ''}`} />
+              <span className={`tl-lamp green ${overall.light === 'green' ? 'on' : ''}`} />
             </div>
+            <div className="tl-labels">
+              <span className={`tl-lbl red ${overall.light === 'red' ? 'on' : ''}`}>위험</span>
+              <span className={`tl-lbl yellow ${overall.light === 'yellow' ? 'on' : ''}`}>주의</span>
+              <span className={`tl-lbl green ${overall.light === 'green' ? 'on' : ''}`}>안전</span>
+            </div>
+          </div>
+          <div className="signal-verdict">
+            <p className="sv-desc">{overall.desc}</p>
+            <p className="sv-counts">
+              위험 {counts.C} · 주의 {counts.B} · 양호 {counts.A} · 안전 {counts.S}
+            </p>
           </div>
         </div>
         <p className="signal-note">
-          앱이 매긴 <b>참고 신호</b>예요. 최종 위험도 판단은 맨 아래에서 직접 내려주세요.
+          앱이 매긴 <b>참고 신호</b>예요. 최종 판단은 맨 아래에서 직접 내려주세요.
         </p>
       </section>
 
@@ -323,7 +326,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           ))}
         </div>
         <p className="grade-tip">
-          🧭 <b>종합 위험도는 앱이 정하지 않아요.</b> 각 등급과 아래 상세를 보고, 맨 아래에서 직접
+          <b>종합 위험도는 앱이 정하지 않아요.</b> 각 등급과 아래 상세를 보고, 맨 아래에서 직접
           판단해보세요.
         </p>
       </section>

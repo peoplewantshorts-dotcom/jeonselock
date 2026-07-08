@@ -622,109 +622,113 @@ input {
   line-height: 1.5;
 }
 
-/* ---------- 종합 신호등 ---------- */
-.signal-row {
+/* ---------- 종합 신호등 (실제 신호등 스타일) ---------- */
+.signal-main {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
-.traffic-light {
+.traffic {
   display: flex;
-  flex-direction: column;
-  gap: 9px;
-  padding: 11px;
-  background: #2b2f33;
-  border-radius: 18px;
+  align-items: flex-start;
+  gap: 14px;
   flex-shrink: 0;
 }
 
-.traffic-light .lamp {
-  width: 32px;
-  height: 32px;
+.tl-housing {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 13px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #33383d 0%, #1e2226 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    0 6px 16px rgba(26, 29, 31, 0.22);
+}
+
+.tl-lamp {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: #454b50;
-  opacity: 0.32;
-  transition: opacity 0.15s;
+  background: #2a2e33;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
 }
 
-.traffic-light .lamp.on {
-  opacity: 1;
+.tl-lamp.red.on {
+  background: radial-gradient(circle at 34% 30%, #ff8f92 0%, #ec4a4f 55%, #c9383d 100%);
+  box-shadow:
+    0 0 18px 3px rgba(229, 72, 77, 0.75),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.25);
 }
 
-.traffic-light .lamp.red.on {
-  background: var(--red);
-  box-shadow: 0 0 12px rgba(229, 72, 77, 0.85);
+.tl-lamp.yellow.on {
+  background: radial-gradient(circle at 34% 30%, #ffd06b 0%, #f0a90f 55%, #cf8f0a 100%);
+  box-shadow:
+    0 0 18px 3px rgba(232, 161, 15, 0.7),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.25);
 }
 
-.traffic-light .lamp.yellow.on {
-  background: var(--amber);
-  box-shadow: 0 0 12px rgba(232, 161, 15, 0.85);
+.tl-lamp.green.on {
+  background: radial-gradient(circle at 34% 30%, #5fd18f 0%, #18a058 55%, #128048 100%);
+  box-shadow:
+    0 0 18px 3px rgba(24, 160, 88, 0.7),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.25);
 }
 
-.traffic-light .lamp.green.on {
-  background: var(--green);
-  box-shadow: 0 0 12px rgba(24, 160, 88, 0.85);
+.tl-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 13px 0;
 }
 
-.signal-desc {
+.tl-lbl {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #c2c7cd;
+  transition: color 0.2s;
+}
+
+.tl-lbl.red.on {
+  color: var(--red);
+}
+.tl-lbl.yellow.on {
+  color: var(--amber);
+}
+.tl-lbl.green.on {
+  color: var(--green);
+}
+
+.signal-verdict {
   min-width: 0;
   flex: 1;
 }
 
-.signal-desc h3 {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 5px;
-}
-
-.signal-desc h3.sig-red {
-  color: var(--red);
-}
-.signal-desc h3.sig-yellow {
-  color: var(--amber);
-}
-.signal-desc h3.sig-green {
-  color: var(--green);
-}
-
-.signal-desc > p {
-  font-size: 14px;
-  color: var(--sub);
-  line-height: 1.45;
+.sv-desc {
+  font-size: 15px;
+  color: #4b5157;
+  line-height: 1.55;
   margin-bottom: 10px;
 }
 
-.signal-counts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.signal-counts .sc {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 999px;
-  color: #fff;
-}
-
-.signal-counts .sc.c {
-  background: var(--red);
-}
-.signal-counts .sc.b {
-  background: var(--amber);
-}
-.signal-counts .sc.a {
-  background: var(--mint);
-}
-.signal-counts .sc.s {
-  background: var(--green);
+.sv-counts {
+  font-size: 12.5px;
+  color: var(--sub);
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
 .signal-note {
-  margin-top: 14px;
+  margin-top: 16px;
   padding: 12px 14px;
   border-radius: 12px;
   background: var(--inner);
