@@ -628,11 +628,18 @@ input {
   line-height: 1.5;
 }
 
-/* ---------- 맨 위 3가지 기능 메뉴 ---------- */
+/* ---------- 최상단 3가지 기능 메뉴 ---------- */
+.menu-guide {
+  margin: 4px 20px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sub);
+}
+
 .menu-bar {
   display: flex;
   gap: 8px;
-  margin: 0 16px 16px;
+  margin: 0 16px 18px;
 }
 
 .menu-item {

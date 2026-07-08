@@ -316,16 +316,8 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         <span className="arrow">&lt;</span> 목록
       </button>
 
-      {/* 주소 */}
-      <div className="result-head">
-        <h1 className="result-addr">{addr.road}</h1>
-        {addr.buildingName && <p className="result-bname">{addr.detail}</p>}
-        <p className="result-note">
-          항목별 등급을 확인하고, <b>종합 판단은 맨 아래에서 직접</b> 내려보세요.
-        </p>
-      </div>
-
-      {/* 맨 위 — 3가지 메인 기능 메뉴 (눌러서 해당 코너로 이동) */}
+      {/* 최상단 — 먼저 고르는 3가지 기능 메뉴 (주소보다 위, 눌러서 해당 코너로 이동) */}
+      <p className="menu-guide">먼저 볼 기능을 골라보세요</p>
       <div className="menu-bar">
         {FEATURES.map((f) => (
           <button key={f.n} className="menu-item" onClick={() => scrollToId(f.id)}>
@@ -333,6 +325,15 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
             <span className="menu-name">{f.short}</span>
           </button>
         ))}
+      </div>
+
+      {/* 주소 */}
+      <div className="result-head">
+        <h1 className="result-addr">{addr.road}</h1>
+        {addr.buildingName && <p className="result-bname">{addr.detail}</p>}
+        <p className="result-note">
+          항목별 등급을 확인하고, <b>종합 판단은 맨 아래에서 직접</b> 내려보세요.
+        </p>
       </div>
 
       {/* 종합 신호등 (참고용 한눈에 보기) */}
