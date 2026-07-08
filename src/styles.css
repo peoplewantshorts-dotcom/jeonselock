@@ -1496,22 +1496,61 @@ input {
   width: 100%;
 }
 
+.data-rowwrap {
+  border-bottom: 1px solid var(--line);
+}
+
+.data-rowwrap:last-child {
+  border-bottom: none;
+}
+
 .data-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 15px 2px;
-  border-bottom: 1px solid var(--line);
-}
-
-.data-row:last-child {
-  border-bottom: none;
 }
 
 .data-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: var(--sub);
   font-size: 15px;
   font-weight: 500;
+}
+
+.data-info {
+  flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  border: 1.5px solid #cdd2d7;
+  background: var(--card);
+  color: var(--sub);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+}
+
+.data-info.on {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: #fff;
+}
+
+.data-hint {
+  padding: 0 2px 15px;
+  margin-top: -4px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5a6067;
+  word-break: keep-all;
 }
 
 .data-value {

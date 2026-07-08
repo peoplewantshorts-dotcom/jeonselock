@@ -1,4 +1,5 @@
 // 공시락에서 가져온 공용 위젯: 링 게이지, 비교 막대, 프로그레스 바, 데이터 표
+import { useState } from 'react'
 
 const GRADE_COLOR = {
   safe: 'var(--green)',
@@ -82,16 +83,32 @@ export function CompareBars({ items, maxHeight = 120 }) {
   )
 }
 
-// 데이터 표 — 라벨 왼쪽 회색 / 값 오른쪽 굵게, 핵심값 노란 형광
+// 데이터 표 — 라벨 왼쪽 회색 / 값 오른쪽 굵게, 핵심값 노란 형광.
+// hint가 있으면 라벨 옆 '?' 아이콘을 눌러 쉬운 설명을 펼친다.
 export function DataTable({ rows }) {
+  const [open, setOpen] = useState({})
   return (
     <div className="data-table">
-      {rows.map((row) => (
-        <div className="data-row" key={row.label}>
-          <span className="data-label">{row.label}</span>
-          <span className="data-value">
-            {row.highlight ? <span className="hl">{row.value}</span> : row.value}
-          </span>
+      {rows.map((row, i) => (
+        <div className="data-rowwrap" key={row.label}>
+          <div className="data-row">
+            <span className="data-label">
+              {row.label}
+              {row.hint && (
+                <button
+                  className={`data-info ${open[i] ? 'on' : ''}`}
+                  onClick={() => setOpen((o) => ({ ...o, [i]: !o[i] }))}
+                  aria-label={`${row.label} 쉬운 설명`}
+                >
+                  ?
+                </button>
+              )}
+            </span>
+            <span className="data-value">
+              {row.highlight ? <span className="hl">{row.value}</span> : row.value}
+            </span>
+          </div>
+          {row.hint && open[i] && <p className="data-hint">{row.hint}</p>}
         </div>
       ))}
     </div>
