@@ -205,11 +205,6 @@ const SELF_CHECK = [
     hint: '동사무소에서 3분이면 끝나요. 내 보증금을 지키는 가장 중요한 안전장치라, 이거 하나만 해도 크게 안심돼요.',
   },
   {
-    id: 'c4',
-    text: '전세보증보험에 들 수 있는 집인지 물어봤어요',
-    hint: '문제가 생기면 나라(HUG 등)가 보증금을 대신 돌려줘요. “보증보험 되는 집이에요?”라고 물어보세요.',
-  },
-  {
     id: 'c5',
     text: '이해 안 되는 건 부동산에 전부 다시 물어봤어요',
     hint: '어려운 말로 대충 넘어가려 하면, 쉽게 설명해 달라고 하세요. 자세히 설명해 주는 게 좋은 부동산이에요.',
@@ -261,7 +256,11 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
 
   const scrollToId = (id) => {
     const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (!el) return
+    // 부드러운 스크롤은 reduced-motion 환경에서 무시되므로, 확실히 이동하도록 위치를 직접 계산.
+    const y = el.getBoundingClientRect().top + window.scrollY - 66 // sticky 헤더 높이 보정
+    window.scrollTo({ top: y, behavior: 'smooth' })
+    window.scrollTo(0, y) // smooth이 막힌 환경 대비 즉시 이동 보장
   }
 
   // 종합 신호등 — 항목 등급을 한눈에(참고용). 최악 등급이 신호를 결정.
@@ -326,6 +325,16 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         </p>
       </div>
 
+      {/* 맨 위 — 3가지 메인 기능 메뉴 (눌러서 해당 코너로 이동) */}
+      <div className="menu-bar">
+        {FEATURES.map((f) => (
+          <button key={f.n} className="menu-item" onClick={() => scrollToId(f.id)}>
+            <span className="menu-num">{f.n}</span>
+            <span className="menu-name">{f.short}</span>
+          </button>
+        ))}
+      </div>
+
       {/* 종합 신호등 (참고용 한눈에 보기) */}
       <section className="card">
         <span className="cat-pill cat-mint">종합 신호</span>
@@ -354,20 +363,6 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           <br />
           최종 판단은 <b>맨 아래에서 직접</b> 내려주세요.
         </p>
-      </section>
-
-      {/* 맨 위 — 3가지 메인 기능 코너 */}
-      <section className="card corners-card">
-        <h2 className="card-title">이 리포트, 3가지 기능</h2>
-        <div className="corners">
-          {FEATURES.map((f) => (
-            <button key={f.n} className="corner" onClick={() => scrollToId(f.id)}>
-              <span className="corner-num">{f.n}</span>
-              <span className="corner-name">{f.name}</span>
-              <span className="corner-desc">{f.short}</span>
-            </button>
-          ))}
-        </div>
       </section>
 
       {/* ① 건축물대장 쉽게 읽기 */}
@@ -578,8 +573,8 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       <section className="card">
         <h2 className="card-title">부동산에 이것만 물어보세요</h2>
         <p className="self-desc">
-          어려운 건 몰라도 괜찮아요. <b>아래 5가지만 부동산에 확인</b>하면 큰 위험은 걸러져요. 하나씩
-          체크하면서 스스로 판단해보세요.
+          어려운 건 몰라도 괜찮아요. <b>아래 {SELF_CHECK.length}가지만 부동산에 확인</b>하면 큰 위험은
+          걸러져요. 하나씩 체크하면서 스스로 판단해보세요.
         </p>
         <div className="note-check">
           {SELF_CHECK.map((it) => (
@@ -603,7 +598,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           </span>
           <p>
             {checkedCount === SELF_CHECK.length
-              ? '5가지를 다 확인했어요. 최종 결정과 책임은 본인에게 있어요.'
+              ? '다 확인했어요. 최종 결정과 책임은 본인에게 있어요.'
               : '체크가 많을수록 안심할 수 있어요. 최종 결정은 본인 몫이에요.'}
           </p>
         </div>
