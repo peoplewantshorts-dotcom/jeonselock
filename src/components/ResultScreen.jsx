@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { RingGauge, CompareBars, DataTable, formatMan } from './widgets.jsx'
 import { FEATURES } from '../features.js'
 import AgentIssueCard from './AgentIssueCard.jsx'
+import ClauseList from './ClauseList.jsx'
+import { recommendClauses } from '../clauses.js'
 
 // 건축물대장 각 항목이 뭘 뜻하는지 대학생 눈높이로 풀어주는 코너.
 // 대장에서 따온 실제 값(building) 옆에 한 줄 해설을 붙이고,
@@ -167,6 +169,8 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
   const [checked, setChecked] = useState({}) // 손님이 직접 체크하는 판단 체크리스트
   const [docSel, setDocSel] = useState({ explain: true, registry: true, ledger: true })
   const checkedCount = SELF_CHECK.filter((i) => checked[i.id]).length
+
+  const clauses = recommendClauses(result) // 이 집에 맞는 추천 특약
 
   const scrollToId = (id) => {
     const el = document.getElementById(id)
@@ -518,6 +522,16 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
               : '체크가 많을수록 안심할 수 있어요. 최종 결정은 본인 몫이에요.'}
           </p>
         </div>
+      </section>
+
+      {/* 계약서 특약 추천 — 이 집에 맞는 안전장치 */}
+      <section className="card">
+        <h2 className="card-title">계약서에 넣으면 좋은 특약</h2>
+        <p className="self-desc">
+          이 집 진단에 맞춘 <b>보증금 지킬 안전장치</b>예요. 문구를 복사해서{' '}
+          <b>부동산에 “이 특약 넣어주세요”</b> 하면 돼요. 정상적인 요청이라 좋은 임대인은 응해줍니다.
+        </p>
+        <ClauseList clauses={clauses} mode="tenant" />
       </section>
 
       {/* ③ 공인중개사 원클릭 발급 */}

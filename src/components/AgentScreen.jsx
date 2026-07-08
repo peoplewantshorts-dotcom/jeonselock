@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { searchAddress } from '../api.js'
 import AgentIssueCard from './AgentIssueCard.jsx'
+import ClauseList from './ClauseList.jsx'
+import { CLAUSES } from '../clauses.js'
 
 // 공인중개사 전용 화면 — 진단 없이 주소만 넣으면 바로 서류 발급.
 export default function AgentScreen({ onBack }) {
@@ -83,6 +85,20 @@ export default function AgentScreen({ onBack }) {
           </p>
         </section>
       )}
+
+      {/* 표준 특약 자동 작성 — 중개사 핵심 도구 (주소 없어도 사용 가능) */}
+      <section className="card">
+        <span className="cat-pill cat-purple">중개사 핵심</span>
+        <h2 className="card-title">표준 특약 자동 작성</h2>
+        <p className="agent-desc">
+          법적 효력 있는 <b>표준 특약</b>을 골라 <b>한 번에 복사</b>해 계약서에 붙여넣으세요. 특약이
+          탄탄할수록 계약 성사·신뢰가 올라가요.
+        </p>
+        <ClauseList clauses={CLAUSES} mode="agent" />
+        <p className="agent-caveat">
+          표준 문구 예시예요. 실제 계약은 물건별 사정에 맞게 조정하고, 필요 시 법률 검토를 받으세요.
+        </p>
+      </section>
     </>
   )
 }
