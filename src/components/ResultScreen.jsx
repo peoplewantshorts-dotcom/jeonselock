@@ -186,25 +186,46 @@ function RegisterGuide({ building, result, unit }) {
   )
 }
 
-const CHECKLIST = [
-  {
-    title: '잔금일에 전입신고 + 확정일자',
-    desc: '이사 당일 주민센터(또는 정부24)에서 바로 처리하세요. 하루만 늦어도 순위가 밀릴 수 있어요.',
-  },
-  {
-    title: '잔금 직전 등기부등본 다시 떼기',
-    desc: '계약일과 잔금일 사이에 근저당이 새로 잡히는 사기가 있어요. 잔금 치르기 직전에 한 번 더 확인하세요.',
-  },
-  {
-    title: '"잔금과 동시에 근저당 말소" 특약 넣기',
-    desc: '집주인이 이 특약을 거부하면 그 자체가 위험 신호예요. 계약을 다시 생각해보세요.',
-  },
+// 손님이 스스로 판단하도록 맡기는 노트형 체크리스트.
+// 하나씩 확인하면서 계약 여부를 직접 결정하게 한다.
+const SELF_CHECK = [
+  { id: 'c1', text: '건축물대장에 위반건축물·미신고 층이 없는지 확인했어요' },
+  { id: 'c2', text: "건물 용도가 '주택'이라 전세보증보험 가입이 되는지 확인했어요" },
+  { id: 'c3', text: '보증금이 최근 시세를 넘지 않는지 확인했어요' },
+  { id: 'c4', text: '등기부등본에서 근저당·소유자(신탁 여부)를 직접 확인했어요' },
+  { id: 'c5', text: '잔금일에 전입신고+확정일자를 바로 할 계획을 세웠어요' },
+  { id: 'c6', text: "'잔금과 동시에 근저당 말소' 특약을 넣기로 했어요" },
 ]
+
+// 결과 리포트의 3가지 메인 기능 (맨 위 코너 + 섹션 헤더)
+const FEATURES = [
+  { n: 1, id: 'feat-1', name: '건축물대장 쉽게 읽기', desc: '어려운 서류를 한 줄로' },
+  { n: 2, id: 'feat-2', name: '등급 확인 & 직접 판단', desc: 'S·A·B·C 보고 스스로' },
+  { n: 3, id: 'feat-3', name: '중개사 원클릭 발급', desc: '원하는 서류만 골라' },
+]
+
+function FeatureHead({ n, id, name, desc }) {
+  return (
+    <div className="feature-head" id={id}>
+      <span className="feature-num">{n}</span>
+      <div className="feature-htext">
+        <h2>{name}</h2>
+        <p>{desc}</p>
+      </div>
+    </div>
+  )
+}
 
 export default function ResultScreen({ addr, depositMan, unit, building, result, onBack, onLock }) {
   const { grades, counts, flags, recentPrice } = result
-  const [myVerdict, setMyVerdict] = useState(null) // 사용자가 스스로 내리는 종합 판단
+  const [checked, setChecked] = useState({}) // 손님이 직접 체크하는 판단 체크리스트
   const [docSel, setDocSel] = useState({ explain: true, registry: true, ledger: true })
+  const checkedCount = SELF_CHECK.filter((i) => checked[i.id]).length
+
+  const scrollToId = (id) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   // 종합 신호등 — 항목 등급을 한눈에(참고용). 최악 등급이 신호를 결정.
   const overall =
@@ -292,11 +313,39 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           </div>
         </div>
         <p className="signal-note">
-          앱이 매긴 <b>참고 신호</b>예요. 최종 판단은 맨 아래에서 직접 내려주세요.
+          앱이 매긴 <b>참고 신호</b>예요.
+          <br />
+          최종 판단은 <b>맨 아래에서 직접</b> 내려주세요.
         </p>
       </section>
 
-      {/* 항목별 등급 (앱은 종합 위험도를 선고하지 않음) */}
+      {/* 맨 위 — 3가지 메인 기능 코너 */}
+      <section className="card corners-card">
+        <h2 className="card-title">이 리포트, 3가지 기능</h2>
+        <div className="corners">
+          {FEATURES.map((f) => (
+            <button key={f.n} className="corner" onClick={() => scrollToId(f.id)}>
+              <span className="corner-num">{f.n}</span>
+              <span className="corner-name">{f.name}</span>
+              <span className="corner-desc">{f.desc}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ① 건축물대장 쉽게 읽기 */}
+      <FeatureHead {...FEATURES[0]} />
+
+      <section className="card">
+        <h2 className="card-title">건축물대장 기본정보</h2>
+        <DataTable rows={baseRows} />
+      </section>
+
+      <RegisterGuide building={building} result={result} unit={unit} />
+
+      {/* ② 등급 확인 & 직접 판단 */}
+      <FeatureHead {...FEATURES[1]} />
+
       <section className="card">
         <span className="cat-pill cat-mint">항목별 등급</span>
         <h2 className="card-title">항목별로 확인하세요</h2>
@@ -326,19 +375,10 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           ))}
         </div>
         <p className="grade-tip">
-          <b>종합 위험도는 앱이 정하지 않아요.</b> 각 등급과 아래 상세를 보고, 맨 아래에서 직접
-          판단해보세요.
+          <b>종합 위험도는 앱이 정하지 않아요.</b> 각 등급과 아래 상세를 보고, 이 섹션 끝의
+          체크리스트로 직접 판단해보세요.
         </p>
       </section>
-
-      {/* 기본정보 표 */}
-      <section className="card">
-        <h2 className="card-title">건축물대장 기본정보</h2>
-        <DataTable rows={baseRows} />
-      </section>
-
-      {/* 건축물대장 쉬운 해설 + 이 집 판정 */}
-      <RegisterGuide building={building} result={result} unit={unit} />
 
       {/* 경고 카드 — 조건 충족 시 */}
       {result.floorMismatch && (
@@ -497,55 +537,41 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         </div>
       </section>
 
-      {/* 체크리스트 */}
+      {/* 직접 판단 체크리스트 — 손님이 스스로 확인하고 판단 (앱은 대신하지 않음) */}
       <section className="card">
-        <h2 className="card-title">계약 전 이것만은 꼭</h2>
-        <div className="check-list">
-          {CHECKLIST.map((c, i) => (
-            <div key={c.title} className="check-item">
-              <span className="check-num">{i + 1}</span>
-              <div>
-                <h4>{c.title}</h4>
-                <p>{c.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 종합 판단 — 사용자가 스스로 (앱은 대신하지 않음) */}
-      <section className="card">
-        <h2 className="card-title">이 집, 어떻게 보세요?</h2>
+        <h2 className="card-title">직접 판단 체크리스트</h2>
         <p className="self-desc">
-          위 항목 등급(S·A·B·C)과 경고를 모두 보고, <b>이 집의 위험도는 직접</b> 판단해보세요. 앱은
-          결론을 대신 내리지 않아요.
+          아래를 하나씩 확인하면서 <b>이 집을 계약할지 스스로</b> 판단해보세요. 앱은 결론을 대신
+          내리지 않아요.
         </p>
-        <div className="self-buttons">
-          {[
-            { key: '안전', emoji: '🟢' },
-            { key: '주의', emoji: '🟡' },
-            { key: '위험', emoji: '🔴' },
-          ].map((o) => (
-            <button
-              key={o.key}
-              className={`self-btn ${myVerdict === o.key ? `active v-${o.key}` : ''}`}
-              onClick={() => setMyVerdict(o.key)}
-            >
-              {o.emoji} {o.key}
-            </button>
+        <div className="note-check">
+          {SELF_CHECK.map((it) => (
+            <label key={it.id} className={`note-item ${checked[it.id] ? 'on' : ''}`}>
+              <input
+                type="checkbox"
+                checked={!!checked[it.id]}
+                onChange={(e) => setChecked((s) => ({ ...s, [it.id]: e.target.checked }))}
+              />
+              <span className="note-box" aria-hidden="true" />
+              <span className="note-text">{it.text}</span>
+            </label>
           ))}
         </div>
-        {myVerdict ? (
-          <p className="self-result">
-            스스로 <b>&lsquo;{myVerdict}&rsquo;</b>이라고 판단했어요. 최종 결정과 책임은 본인에게
-            있어요.
+        <div className="note-foot">
+          <span className="note-count">
+            {checkedCount} / {SELF_CHECK.length} 확인
+          </span>
+          <p>
+            {checkedCount === SELF_CHECK.length
+              ? '모두 확인했어요. 최종 결정과 책임은 본인에게 있어요.'
+              : '체크가 많을수록 안심할 수 있어요. 최종 결정은 본인 몫이에요.'}
           </p>
-        ) : (
-          <p className="self-hint">아직 판단 전이에요. 참고 자료로만 쓰고, 계약 전 전문가와 상담하세요.</p>
-        )}
+        </div>
       </section>
 
-      {/* 공인중개사용 — 원하는 서류만 체크해서 원스톱 발급 */}
+      {/* ③ 공인중개사 원클릭 발급 */}
+      <FeatureHead {...FEATURES[2]} />
+
       <AgentIssueCard addr={addr} docSel={docSel} setDocSel={setDocSel} />
 
       {/* 하단 버튼 */}
