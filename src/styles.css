@@ -628,7 +628,7 @@ input {
   line-height: 1.5;
 }
 
-/* ---------- 홈 메인 카테고리 (크고 차분하게) ---------- */
+/* ---------- 홈 메인 카테고리 (중개사=크게 위 / 소비자 2개 아래) ---------- */
 .cat-guide {
   margin: 6px 20px 12px;
   font-size: 15px;
@@ -645,11 +645,6 @@ input {
 }
 
 .cat-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 18px;
-  border-radius: 18px;
   border: 1px solid var(--line);
   background: var(--card);
   text-align: left;
@@ -666,49 +661,17 @@ input {
   border-color: rgba(27, 197, 163, 0.55);
 }
 
-.cat-num {
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background: var(--mint-soft);
-  color: #0e8f76;
-  font-size: 19px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cat-body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
 .cat-name {
-  font-size: 16.5px;
   font-weight: 800;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
   color: var(--text);
   line-height: 1.25;
 }
 
 .cat-sub {
-  font-size: 12.5px;
   color: var(--sub);
   line-height: 1.4;
   word-break: keep-all;
-}
-
-.cat-right {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
 }
 
 .cat-arrow {
@@ -716,6 +679,74 @@ input {
   font-weight: 700;
   color: #c4c9ce;
   line-height: 1;
+}
+
+/* 중개사 — 핵심, 큰 가로 카드 */
+.cat-big {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 20px;
+  border-radius: 18px;
+  border-color: rgba(112, 72, 200, 0.28);
+  background: #f7f4fd;
+}
+
+.cat-big:hover {
+  border-color: rgba(112, 72, 200, 0.55);
+}
+
+.cat-big .cat-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cat-big .cat-name {
+  font-size: 18.5px;
+}
+
+.cat-big .cat-sub {
+  font-size: 13px;
+}
+
+.cat-big .cat-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* 소비자 — 작은 카드 2개 나란히 */
+.cat-row {
+  display: flex;
+  gap: 10px;
+}
+
+.cat-small {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.cat-small .cat-name {
+  font-size: 15px;
+}
+
+.cat-small .cat-sub {
+  font-size: 11.5px;
+}
+
+.cat-small .who-tag {
+  margin-top: 2px;
 }
 
 /* ---------- 결과 상단 3가지 기능 메뉴 ---------- */

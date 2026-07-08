@@ -86,6 +86,10 @@ export default function HomeScreen({ onDiagnose, onPickFeature }) {
     if (canSubmit) onDiagnose(selected, depositMan, unit.trim())
   }
 
+  // 중개사(핵심 고객)는 큰 카드로 위, 소비자 기능 2개는 아래 나란히
+  const agentFeature = FEATURES.find((f) => f.tag === 'agent')
+  const consumerFeatures = FEATURES.filter((f) => f.tag !== 'agent')
+
   return (
     <>
       <div className="hero">
@@ -99,24 +103,33 @@ export default function HomeScreen({ onDiagnose, onPickFeature }) {
         주소만 넣으면 공공데이터로 <b>꼭 확인할 것</b>을 짚어드려요
       </p>
 
-      {/* 집 정보 입력보다 먼저 — 누구세요? 골라서 바로 들어가기 */}
+      {/* 집 정보 입력보다 먼저 — 누구세요? (중개사=핵심 → 크게 위, 소비자 2개 아래) */}
       <p className="cat-guide">누구세요? 골라서 바로 시작하세요</p>
       <div className="cat-menu">
-        {FEATURES.map((f) => (
-          <button key={f.n} className="cat-card" onClick={() => pickFeature(f)}>
-            <span className="cat-num">{f.n}</span>
-            <span className="cat-body">
+        {/* 중개사 — 핵심 고객, 큰 카드 */}
+        <button className="cat-card cat-big" onClick={() => pickFeature(agentFeature)}>
+          <span className="cat-body">
+            <span className="cat-name">{agentFeature.short}</span>
+            <span className="cat-sub">{agentFeature.sub}</span>
+          </span>
+          <span className="cat-right">
+            <span className={`who-tag who-${agentFeature.tag}`}>{agentFeature.who}</span>
+            <span className="cat-arrow" aria-hidden="true">
+              ›
+            </span>
+          </span>
+        </button>
+
+        {/* 소비자 — 2개 나란히 */}
+        <div className="cat-row">
+          {consumerFeatures.map((f) => (
+            <button key={f.id} className="cat-card cat-small" onClick={() => pickFeature(f)}>
               <span className="cat-name">{f.short}</span>
               <span className="cat-sub">{f.sub}</span>
-            </span>
-            <span className="cat-right">
               <span className={`who-tag who-${f.tag}`}>{f.who}</span>
-              <span className="cat-arrow" aria-hidden="true">
-                ›
-              </span>
-            </span>
-          </button>
-        ))}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* 주소 + 보증금 입력 */}
