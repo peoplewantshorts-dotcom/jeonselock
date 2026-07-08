@@ -374,10 +374,12 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
 
       <section className="card">
         <h2 className="card-title">건축물대장 기본정보</h2>
+        <p className="self-desc">
+          건축물대장은 이 건물의 <b>&lsquo;주민등록등본&rsquo; 같은 서류</b>예요. 어려운 말은 항목
+          옆 <b>?</b>를 눌러 확인하세요.
+        </p>
         <DataTable rows={baseRows} />
       </section>
-
-      <RegisterGuide building={building} result={result} unit={unit} />
 
       {/* ② 등급 확인 & 직접 판단 */}
       <FeatureHead {...FEATURES[1]} />
