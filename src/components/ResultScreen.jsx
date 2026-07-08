@@ -168,17 +168,17 @@ function FeatureHead({ n, id, name, desc, who, tag }) {
 // 주용도(다세대주택 등)를 비전문가 눈높이로 풀어준다.
 function usageHint(use = '') {
   if (/다세대/.test(use))
-    return '한 건물에 여러 가구가 사는 4층 이하 주택이에요. 집마다 등기가 따로 있어 보증보험도 대체로 가능해요.'
+    return '한 건물에 여러 가구가 사는 ~4층 이하 주택~이에요. 집마다 등기가 따로 있어 보증보험도 대체로 가능해요.'
   if (/다가구/.test(use))
-    return '한 주인이 소유한 여러 가구 주택(단독주택의 일종)이에요. 등기가 하나라 나보다 앞선 세입자·빚이 있는지 확인이 중요해요.'
+    return '한 주인이 소유한 여러 가구 주택(단독주택의 일종)이에요. ~등기가 하나라 앞선 세입자·빚이 있는지 확인~이 중요해요.'
   if (/아파트/.test(use)) return '5층 이상 공동주택이에요. 대체로 주거·보증보험에 무리가 없어요.'
   if (/오피스텔|업무/.test(use))
-    return "서류상 업무시설이에요. 실제로 살아도 '주택'이 아니라서 보증보험이 안 될 수 있어요. 중개사에게 확인하세요."
+    return "서류상 업무시설이에요. ~실제로 살아도 '주택'이 아니라서 보증보험이 안 될 수 있어요.~ 중개사에게 확인하세요."
   if (/근린생활|상가|판매/.test(use))
-    return '상가·사무실 용도예요. 주택이 아니라 전입신고·보증보험에 제약이 생길 수 있어요.'
-  if (/도시형/.test(use)) return '1~2인 가구용 소형 주택이에요. 주택으로 인정돼 대체로 무리가 없어요.'
+    return '상가·사무실 용도예요. ~주택이 아니라 전입신고·보증보험에 제약~이 생길 수 있어요.'
+  if (/도시형/.test(use)) return '1·2인 가구용 소형 주택이에요. 주택으로 인정돼 대체로 무리가 없어요.'
   if (/단독주택/.test(use))
-    return '한 세대가 사는 주택이에요. 등기가 하나라 앞선 빚·세입자 확인이 중요해요.'
+    return '한 세대가 사는 주택이에요. ~등기가 하나라 앞선 빚·세입자 확인~이 중요해요.'
   return '건축물대장에 등록된 이 건물의 주된 용도예요. 주거용인지 중개사에게 확인하세요.'
 }
 
@@ -250,7 +250,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
     setTimeout(() => setSent(false), 2500)
   }
 
-    const pyeong = building.areaM2 ? Math.round((building.areaM2 / 3.3058) * 10) / 10 : null
+  const pyeong = building.areaM2 ? Math.round((building.areaM2 / 3.3058) * 10) / 10 : null
 
   const baseRows = [
     {
@@ -264,33 +264,33 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       value: building.owner || '확인 불가',
       highlight: result.trust,
       hint: result.trust
-        ? '이 집의 진짜 주인이에요. 신탁회사 명의라, 집주인이 마음대로 세를 놓을 수 없어요. 계약 전 중개사에게 확인하세요.'
-        : "이 집의 진짜 주인이에요. '개인'은 개인 명의라는 뜻. 계약하는 상대가 이 사람과 같은지 신분증·등기부로 확인하세요.",
+        ? '이 집의 진짜 주인이에요. ~신탁회사 명의라, 집주인이 마음대로 세를 놓을 수 없어요.~ 계약 전 중개사에게 확인하세요.'
+        : "이 집의 진짜 주인이에요. '개인'은 개인 명의라는 뜻. ~계약하는 상대가 이 사람과 같은지~ 신분증·등기부로 확인하세요.",
     },
     {
       label: '준공연도',
       value: `${building.builtYear}년 (${result.age}년차)`,
       highlight: flags.includes('old'),
-      hint: '건물을 다 지어 사용승인 받은 해예요. 오래될수록 노후·하자 확인이 필요하고, 대출 한도가 줄기도 해요.',
+      hint: '건물을 다 지어 사용승인 받은 해예요. ~오래될수록 노후·하자 확인이 필요~하고, 대출 한도가 줄기도 해요.',
     },
     {
       label: '층수',
       value: unit ? `${building.floors} · 신청 ${unit}` : building.floors,
       highlight: result.floorMismatch,
-      hint: '이 건물이 지상·지하 몇 층까지 있는지예요. 내 호수의 층(예: 302호=3층)이 이 숫자보다 높으면, 서류에 없는 층이라 확인이 필요해요.',
+      hint: '이 건물이 지상·지하 몇 층까지 있는지예요. ~내 호수의 층(예: 302호=3층)이 이 숫자보다 높으면, 서류에 없는 층~이라 확인이 필요해요.',
     },
     {
       label: '전용면적',
       value: `${building.areaM2}㎡`,
       hint: pyeong
-        ? `내가 실제로 쓰는 넓이예요. 1평 ≈ 3.3㎡라, ${building.areaM2}㎡ ≈ 약 ${pyeong}평이에요.`
+        ? `내가 실제로 쓰는 넓이예요. 1평 ≈ 3.3㎡라, ${building.areaM2}㎡ ≈ ~약 ${pyeong}평~이에요.`
         : '내가 실제로 쓰는 넓이(㎡)예요. 1평 ≈ 3.3㎡.',
     },
     {
       label: '위반건축물',
       value: building.violation ? '등록됨' : result.floorMismatch ? '미신고 의심' : '해당 없음',
       highlight: building.violation || result.floorMismatch,
-      hint: "건축법을 어겨 대장에 표시됐는지예요. '해당 없음'이면 표시가 없다는 뜻이고, '등록됨'이면 전입·대출·보증보험에 제약이 생길 수 있어 중개사 확인이 필요해요.",
+      hint: "건축법을 어겨 대장에 표시됐는지예요. '해당 없음'이면 표시가 없다는 뜻이고, ~'등록됨'이면 전입·대출·보증보험에 제약이 생길 수 있어~ 중개사 확인이 필요해요.",
     },
   ]
 

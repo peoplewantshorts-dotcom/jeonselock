@@ -83,6 +83,22 @@ export function CompareBars({ items, maxHeight = 120 }) {
   )
 }
 
+// 설명 문구에서 ~중요~ 로 감싼 부분을 밑줄로 강조해 렌더한다.
+function renderHint(text) {
+  if (!text) return null
+  return String(text)
+    .split('~')
+    .map((seg, i) =>
+      i % 2 === 1 ? (
+        <u className="hint-u" key={i}>
+          {seg}
+        </u>
+      ) : (
+        <span key={i}>{seg}</span>
+      ),
+    )
+}
+
 // 데이터 표 — 라벨 왼쪽 회색 / 값 오른쪽 굵게, 핵심값 노란 형광.
 // hint가 있으면 라벨 옆 '?' 아이콘을 눌러 쉬운 설명을 펼친다.
 export function DataTable({ rows }) {
@@ -108,7 +124,7 @@ export function DataTable({ rows }) {
               {row.highlight ? <span className="hl">{row.value}</span> : row.value}
             </span>
           </div>
-          {row.hint && open[i] && <p className="data-hint">{row.hint}</p>}
+          {row.hint && open[i] && <p className="data-hint">{renderHint(row.hint)}</p>}
         </div>
       ))}
     </div>

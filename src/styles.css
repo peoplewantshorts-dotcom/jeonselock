@@ -1576,16 +1576,23 @@ input {
 }
 
 .data-hint {
-  margin: 0 2px 14px;
-  padding: 12px 14px;
-  background: var(--inner);
-  border-left: 3px solid var(--mint);
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 1.6;
+  margin: 2px 2px 15px;
+  padding: 0 2px;
+  font-size: 15px;
+  line-height: 1.65;
   color: #3f454c;
   font-weight: 500;
   word-break: keep-all;
+}
+
+/* 설명 속 중요 부분 밑줄 강조 */
+.hint-u {
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--mint);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
 }
 
 .data-value {
