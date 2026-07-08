@@ -3,6 +3,20 @@ import { searchAddress } from '../api.js'
 import AgentIssueCard from './AgentIssueCard.jsx'
 import ClauseList from './ClauseList.jsx'
 import { CLAUSES } from '../clauses.js'
+import LeadCard from './LeadCard.jsx'
+
+// 임차인이 앱에서 정리해 보낸 요청이 중개사에게 이렇게 도착한다(데모).
+const DEMO_LEAD = {
+  address: '서울 관악구 봉천로 100',
+  unit: '302호',
+  buildingLine: '다세대주택 · 2018년 · 지상 5층',
+  gradeLabel: '주의',
+  gradeLight: 'yellow',
+  warnings: ['보증금 시세 90%↑'],
+  depositText: '2억 1,000만원',
+  clauses: ['잔금과 동시에 근저당 말소', '선순위 권리 없음 확인'],
+  memo: '7월 초 입주 희망, 확정일자 당일 처리 원함',
+}
 
 // 공인중개사 전용 화면 — 진단 없이 주소만 넣으면 바로 서류 발급.
 export default function AgentScreen({ onBack }) {
@@ -42,10 +56,20 @@ export default function AgentScreen({ onBack }) {
         </span>
         <h1 className="result-addr">서류 원클릭 발급</h1>
         <p className="result-note">
-          진단 없이, <b>주소만 넣으면</b> 확인·설명서 / 등기부 / 건축물대장을 한 번에 발급처로
-          이동해요.
+          임차인이 앱에서 <b>정리해 보낸 요청</b>을 받아, 서류·특약까지 한 화면에서 처리해요.
         </p>
       </div>
+
+      {/* 임차인에게서 온 정리된 요청 (데모) — 중개사가 받는 데이터 */}
+      <section className="card">
+        <span className="cat-pill cat-mint">도착한 요청</span>
+        <h2 className="card-title">임차인이 정리해 보낸 요청</h2>
+        <p className="agent-desc">
+          임차인이 매물·진단·조건·요청 특약을 <b>정리해서 보내요.</b> 반복 질문·간보기 없이 바로
+          상담·계약으로 넘어갈 수 있어요.
+        </p>
+        <LeadCard lead={DEMO_LEAD} />
+      </section>
 
       <section className="card">
         <div className="search-wrap">

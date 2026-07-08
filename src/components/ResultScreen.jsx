@@ -4,6 +4,7 @@ import { FEATURES } from '../features.js'
 import AgentIssueCard from './AgentIssueCard.jsx'
 import ClauseList from './ClauseList.jsx'
 import { recommendClauses } from '../clauses.js'
+import LeadCard, { buildLeadText } from './LeadCard.jsx'
 
 // 건축물대장 각 항목이 뭘 뜻하는지 대학생 눈높이로 풀어주는 코너.
 // 대장에서 따온 실제 값(building) 옆에 한 줄 해설을 붙이고,
@@ -171,6 +172,8 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
   const checkedCount = SELF_CHECK.filter((i) => checked[i.id]).length
 
   const clauses = recommendClauses(result) // 이 집에 맞는 추천 특약
+  const [memo, setMemo] = useState('')
+  const [sent, setSent] = useState(false)
 
   const scrollToId = (id) => {
     const el = document.getElementById(id)
@@ -188,6 +191,35 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       : counts.B > 0
         ? { key: '주의', light: 'yellow', desc: '주의가 필요한 항목(B 등급)이 있어요. 조건을 점검하세요.' }
         : { key: '안전', light: 'green', desc: '큰 위험 신호는 보이지 않아요. 그래도 체크리스트는 지키세요.' }
+
+  // 임차인 입력·진단 → 중개사에게 넘어가는 정리된 요청 (overall 이후에 계산)
+  const lead = {
+    address: addr.road,
+    unit,
+    buildingLine: `${building.mainUse} · ${building.builtYear}년 · ${building.floors}`,
+    gradeLabel: overall.key,
+    gradeLight: overall.light,
+    warnings: [
+      result.floorMismatch && '서류에 없는 층(불법증축 의심)',
+      building.violation && '위반건축물',
+      result.trust && '신탁 소유',
+      result.nonResidential && '주택 아님(근생·업무)',
+      flags.includes('overpriced') && '보증금 시세 초과',
+    ].filter(Boolean),
+    depositText: formatMan(depositMan),
+    clauses: clauses.map((c) => c.title),
+    memo,
+  }
+
+  const sendLead = async () => {
+    try {
+      await navigator.clipboard.writeText(buildLeadText(lead))
+    } catch {
+      /* 클립보드 미지원 무시 */
+    }
+    setSent(true)
+    setTimeout(() => setSent(false), 2500)
+  }
 
   const baseRows = [
     { label: '주용도', value: building.mainUse, highlight: result.nonResidential },
@@ -532,6 +564,27 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           <b>부동산에 “이 특약 넣어주세요”</b> 하면 돼요. 정상적인 요청이라 좋은 임대인은 응해줍니다.
         </p>
         <ClauseList clauses={clauses} mode="tenant" />
+      </section>
+
+      {/* 중개사에게 전달 — 임차인 입력·진단이 정리된 데이터로 넘어감 */}
+      <section className="card handoff-card">
+        <span className="cat-pill cat-purple">중개사에게 전달</span>
+        <h2 className="card-title">정리해서 중개사에게 넘기기</h2>
+        <p className="self-desc">
+          입력·진단한 내용이 <b>중개사에게 이렇게 정리되어</b> 전달돼요. 중개사는 바로 상담할 수
+          있어 <b>노쇼·간보기</b>가 줄고, 나는 <b>같은 설명을 반복</b>하지 않아도 돼요.
+        </p>
+        <textarea
+          className="handoff-memo"
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+          placeholder="중개사에게 남길 메모 (예: 7월 초 입주 희망, 반려동물 있음, 예산 조정 가능)"
+          rows={2}
+        />
+        <LeadCard lead={lead} />
+        <button className="handoff-btn" onClick={sendLead}>
+          {sent ? '복사됐어요 · 중개사에게 붙여넣어 보내세요' : '정리해서 복사하기'}
+        </button>
       </section>
 
       {/* ③ 공인중개사 원클릭 발급 */}

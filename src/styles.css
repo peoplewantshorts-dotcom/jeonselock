@@ -810,12 +810,18 @@ input {
 }
 
 .who-tag {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 700;
-  padding: 2px 9px;
+  padding: 4px 11px;
   border-radius: 999px;
   letter-spacing: -0.2px;
   white-space: nowrap;
+}
+
+/* 홈 카테고리 카드에선 조금 더 크게 */
+.cat-right .who-tag {
+  font-size: 13px;
+  padding: 5px 12px;
 }
 
 /* ---------- 기능 섹션 헤더 ---------- */
@@ -1189,6 +1195,100 @@ input {
   font-size: 12.5px;
   color: var(--sub);
   line-height: 1.5;
+}
+
+/* ---------- 중개사 전달 요청(정리된 데이터) ---------- */
+.lead {
+  background: var(--inner);
+  border-radius: 14px;
+  padding: 6px 16px;
+}
+
+.lead-row {
+  display: flex;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.lead-row:last-child {
+  border-bottom: none;
+}
+
+.lead-k {
+  flex-shrink: 0;
+  width: 66px;
+  color: var(--sub);
+  font-weight: 600;
+}
+
+.lead-v {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  font-weight: 600;
+  word-break: keep-all;
+}
+
+.lead-grade {
+  font-weight: 800;
+  padding: 1px 9px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12.5px;
+}
+
+.lead-grade.lg-red {
+  background: var(--red);
+}
+.lead-grade.lg-yellow {
+  background: var(--amber);
+}
+.lead-grade.lg-green {
+  background: var(--green);
+}
+
+.lead-warn {
+  color: var(--sub);
+  font-weight: 500;
+}
+
+.handoff-card {
+  border: 1.5px solid rgba(112, 72, 200, 0.28);
+}
+
+.handoff-memo {
+  width: 100%;
+  border: 1.5px solid #e4e7ea;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.handoff-memo:focus {
+  border-color: #7048c8;
+}
+
+.handoff-memo::placeholder {
+  color: #b7bcc2;
+}
+
+.handoff-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  background: #6b46c1;
+  color: #fff;
+  font-size: 15.5px;
+  font-weight: 700;
 }
 
 /* ---------- 계약서 특약 ---------- */
