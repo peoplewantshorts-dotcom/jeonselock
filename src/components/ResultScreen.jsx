@@ -187,21 +187,58 @@ function RegisterGuide({ building, result, unit }) {
 }
 
 // 손님이 스스로 판단하도록 맡기는 노트형 체크리스트.
-// 하나씩 확인하면서 계약 여부를 직접 결정하게 한다.
+// 어려운 용어(근저당·확정일자·시세)는 몰라도 되게, 초보자가 '물어보고 확인'할 수 있는 말로.
 const SELF_CHECK = [
-  { id: 'c1', text: '건축물대장에 위반건축물·미신고 층이 없는지 확인했어요' },
-  { id: 'c2', text: "건물 용도가 '주택'이라 전세보증보험 가입이 되는지 확인했어요" },
-  { id: 'c3', text: '보증금이 최근 시세를 넘지 않는지 확인했어요' },
-  { id: 'c4', text: '등기부등본에서 근저당·소유자(신탁 여부)를 직접 확인했어요' },
-  { id: 'c5', text: '잔금일에 전입신고+확정일자를 바로 할 계획을 세웠어요' },
-  { id: 'c6', text: "'잔금과 동시에 근저당 말소' 특약을 넣기로 했어요" },
+  {
+    id: 'c1',
+    text: '계약하는 사람이 진짜 집주인이 맞는지 확인했어요',
+    hint: '신분증 이름과 등기부(집 주인이 적힌 서류)의 주인 이름이 같은지 부동산에 확인해 달라고 하세요.',
+  },
+  {
+    id: 'c2',
+    text: '이 집에 잡혀 있는 빚(대출)이 얼마인지 물어봤어요',
+    hint: '집을 담보로 받은 대출이 많으면, 잘못될 때 내 보증금이 위험해요. 부동산에 “빚이 얼마 있어요?”라고 물어보세요.',
+  },
+  {
+    id: 'c3',
+    text: '이사 첫날 전입신고 + 확정일자를 하기로 했어요',
+    hint: '동사무소에서 3분이면 끝나요. 내 보증금을 지키는 가장 중요한 안전장치라, 이거 하나만 해도 크게 안심돼요.',
+  },
+  {
+    id: 'c4',
+    text: '전세보증보험에 들 수 있는 집인지 물어봤어요',
+    hint: '문제가 생기면 나라(HUG 등)가 보증금을 대신 돌려줘요. “보증보험 되는 집이에요?”라고 물어보세요.',
+  },
+  {
+    id: 'c5',
+    text: '이해 안 되는 건 부동산에 전부 다시 물어봤어요',
+    hint: '어려운 말로 대충 넘어가려 하면, 쉽게 설명해 달라고 하세요. 자세히 설명해 주는 게 좋은 부동산이에요.',
+  },
 ]
 
 // 결과 리포트의 3가지 메인 기능 (맨 위 코너 + 섹션 헤더)
 const FEATURES = [
-  { n: 1, id: 'feat-1', name: '건축물대장 쉽게 읽기', desc: '어려운 서류를 한 줄로' },
-  { n: 2, id: 'feat-2', name: '등급 확인 & 직접 판단', desc: 'S·A·B·C 보고 스스로' },
-  { n: 3, id: 'feat-3', name: '중개사 원클릭 발급', desc: '원하는 서류만 골라' },
+  {
+    n: 1,
+    id: 'feat-1',
+    name: '건축물대장 쉽게 읽기',
+    desc: '건축물대장 = 건물의 신분증. 어려운 말을 한 줄로',
+    short: '건물의 신분증 읽기',
+  },
+  {
+    n: 2,
+    id: 'feat-2',
+    name: '등급 확인 & 직접 판단',
+    desc: 'S·A·B·C 보고 스스로',
+    short: '등급 보고 직접 판단',
+  },
+  {
+    n: 3,
+    id: 'feat-3',
+    name: '중개사 원클릭 발급',
+    desc: '원하는 서류만 골라',
+    short: '서류 원클릭 발급',
+  },
 ]
 
 function FeatureHead({ n, id, name, desc }) {
@@ -327,7 +364,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
             <button key={f.n} className="corner" onClick={() => scrollToId(f.id)}>
               <span className="corner-num">{f.n}</span>
               <span className="corner-name">{f.name}</span>
-              <span className="corner-desc">{f.desc}</span>
+              <span className="corner-desc">{f.short}</span>
             </button>
           ))}
         </div>
@@ -537,12 +574,12 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         </div>
       </section>
 
-      {/* 직접 판단 체크리스트 — 손님이 스스로 확인하고 판단 (앱은 대신하지 않음) */}
+      {/* 직접 판단 체크리스트 — 초보자도 물어보고 확인할 수 있는 쉬운 말 */}
       <section className="card">
-        <h2 className="card-title">직접 판단 체크리스트</h2>
+        <h2 className="card-title">부동산에 이것만 물어보세요</h2>
         <p className="self-desc">
-          아래를 하나씩 확인하면서 <b>이 집을 계약할지 스스로</b> 판단해보세요. 앱은 결론을 대신
-          내리지 않아요.
+          어려운 건 몰라도 괜찮아요. <b>아래 5가지만 부동산에 확인</b>하면 큰 위험은 걸러져요. 하나씩
+          체크하면서 스스로 판단해보세요.
         </p>
         <div className="note-check">
           {SELF_CHECK.map((it) => (
@@ -553,7 +590,10 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
                 onChange={(e) => setChecked((s) => ({ ...s, [it.id]: e.target.checked }))}
               />
               <span className="note-box" aria-hidden="true" />
-              <span className="note-text">{it.text}</span>
+              <span className="note-text">
+                <b>{it.text}</b>
+                <span className="note-hint">{it.hint}</span>
+              </span>
             </label>
           ))}
         </div>
@@ -563,7 +603,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           </span>
           <p>
             {checkedCount === SELF_CHECK.length
-              ? '모두 확인했어요. 최종 결정과 책임은 본인에게 있어요.'
+              ? '5가지를 다 확인했어요. 최종 결정과 책임은 본인에게 있어요.'
               : '체크가 많을수록 안심할 수 있어요. 최종 결정은 본인 몫이에요.'}
           </p>
         </div>
