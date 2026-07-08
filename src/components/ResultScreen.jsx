@@ -163,10 +163,10 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
   ]
 
   const share = async () => {
-    const text = `[전세락] ${addr.road} 진단 결과: ${gradeLabel} (위험도 ${score}점)`
+    const text = `[월세락] ${addr.road} 진단 결과: ${gradeLabel} (위험도 ${score}점)`
     try {
       if (navigator.share) {
-        await navigator.share({ title: '전세락 진단 결과', text, url: location.href })
+        await navigator.share({ title: '월세락 진단 결과', text, url: location.href })
       } else {
         await navigator.clipboard.writeText(`${text}\n${location.href}`)
         alert('진단 결과 링크를 복사했어요.')

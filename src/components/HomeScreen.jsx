@@ -76,7 +76,7 @@ export default function HomeScreen({ onDiagnose }) {
     <>
       <div className="hero">
         <h1 className="hero-title">
-          <span className="gray">전세 계약 전</span>
+          <span className="gray">월세 계약 전</span>
           미리 확인하세요
         </h1>
         <span className="hero-badge">무료 진단 6가지</span>

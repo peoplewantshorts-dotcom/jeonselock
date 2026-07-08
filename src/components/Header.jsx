@@ -9,7 +9,7 @@ export default function Header({ onNotify }) {
   return (
     <header className="header">
       <div className="logo">
-        전세<span className="accent">락</span>
+        월세<span className="accent">락</span>
       </div>
       <div className="header-right">
         <button className="bell-btn" onClick={onNotify}>
