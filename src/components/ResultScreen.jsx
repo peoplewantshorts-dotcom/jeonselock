@@ -511,67 +511,6 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         </p>
       </section>
 
-      {/* 🔒 근저당 확인 */}
-      <section className="card locked-card">
-        <div className="locked-content">
-          <span className="cat-pill cat-purple">근저당 확인</span>
-          <h2 className="card-title">빚 + 내 보증금, 집값을 넘나요?</h2>
-          <div className="innerbox">
-            <div className="gauge-row">
-              <RingGauge value={mortgageRatio} color="danger" centerText={`${mortgageRatio}%`} />
-              <div className="gauge-desc">
-                <h3>(근저당 + 보증금) ÷ 시세</h3>
-                <p>80%를 넘으면 경매 시 보증금 일부를 못 받을 수 있어요.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="lock-overlay">
-          <span className="lock-icon">🔒</span>
-          <span className="lock-title">근저당 확인</span>
-          <span className="lock-desc">
-            등기부등본의 근저당(집주인 빚)까지 합쳐 경매 시 내 보증금이 안전한지 계산해드려요.
-          </span>
-          <button className="lock-btn" onClick={onLock}>
-            정밀 진단으로 확인하기
-          </button>
-        </div>
-      </section>
-
-      {/* 🔒 전세가율 */}
-      <section className="card locked-card">
-        <div className="locked-content">
-          <span className="cat-pill cat-purple">전세가율</span>
-          <h2 className="card-title">이 동네에서 안전한 보증금일까요?</h2>
-          <div className="innerbox">
-            <div className="bars-box">
-              <CompareBars
-                items={[
-                  { label: '내 전세가율', value: jeonseRatio, display: `${jeonseRatio}%`, mint: true },
-                  { label: '지역 평균', value: 68, display: '68%' },
-                ]}
-              />
-              <div className="bars-side">
-                <div>
-                  <div className="metric-label">확인 기준선</div>
-                  <div className="metric-value">80%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="lock-overlay">
-          <span className="lock-icon">🔒</span>
-          <span className="lock-title">전세가율 분석</span>
-          <span className="lock-desc">
-            매매가 대비 전세금 비율을 동네 평균과 비교해 깡통전세 여부를 알려드려요.
-          </span>
-          <button className="lock-btn" onClick={onLock}>
-            정밀 진단으로 확인하기
-          </button>
-        </div>
-      </section>
-
       {/* 직접 판단 체크리스트 — 초보자도 물어보고 확인할 수 있는 쉬운 말 */}
       <section className="card">
         <h2 className="card-title">부동산에 이것만 물어보세요</h2>
@@ -615,6 +554,67 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           <b>부동산에 “이 특약 넣어주세요”</b> 하면 돼요. 정상적인 요청이라 좋은 임대인은 응해줍니다.
         </p>
         <ClauseList clauses={clauses} mode="tenant" />
+      </section>
+
+      {/* 🔒 정밀진단 (맨 아래 업셀) — 근저당 확인 */}
+      <section className="card locked-card">
+        <div className="locked-content">
+          <span className="cat-pill cat-purple">근저당 확인</span>
+          <h2 className="card-title">빚 + 내 보증금, 집값을 넘나요?</h2>
+          <div className="innerbox">
+            <div className="gauge-row">
+              <RingGauge value={mortgageRatio} color="danger" centerText={`${mortgageRatio}%`} />
+              <div className="gauge-desc">
+                <h3>(근저당 + 보증금) ÷ 시세</h3>
+                <p>80%를 넘으면 경매 시 보증금 일부를 못 받을 수 있어요.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="lock-overlay">
+          <span className="lock-icon">🔒</span>
+          <span className="lock-title">근저당 확인</span>
+          <span className="lock-desc">
+            등기부등본의 근저당(집주인 빚)까지 합쳐 경매 시 내 보증금이 안전한지 계산해드려요.
+          </span>
+          <button className="lock-btn" onClick={onLock}>
+            정밀 진단으로 확인하기
+          </button>
+        </div>
+      </section>
+
+      {/* 🔒 정밀진단 — 전세가율 */}
+      <section className="card locked-card">
+        <div className="locked-content">
+          <span className="cat-pill cat-purple">전세가율</span>
+          <h2 className="card-title">이 동네에서 안전한 보증금일까요?</h2>
+          <div className="innerbox">
+            <div className="bars-box">
+              <CompareBars
+                items={[
+                  { label: '내 전세가율', value: jeonseRatio, display: `${jeonseRatio}%`, mint: true },
+                  { label: '지역 평균', value: 68, display: '68%' },
+                ]}
+              />
+              <div className="bars-side">
+                <div>
+                  <div className="metric-label">확인 기준선</div>
+                  <div className="metric-value">80%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="lock-overlay">
+          <span className="lock-icon">🔒</span>
+          <span className="lock-title">전세가율 분석</span>
+          <span className="lock-desc">
+            매매가 대비 전세금 비율을 동네 평균과 비교해 깡통전세 여부를 알려드려요.
+          </span>
+          <button className="lock-btn" onClick={onLock}>
+            정밀 진단으로 확인하기
+          </button>
+        </div>
       </section>
 
       {/* 중개사에게 전달 — 임차인 입력·진단이 정리된 데이터로 넘어감 */}

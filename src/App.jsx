@@ -50,7 +50,7 @@ export default function App() {
         />
       )}
 
-      {screen === 'agent' && <AgentScreen onBack={goHome} />}
+      {screen === 'agent' && <AgentScreen onBack={goHome} onLock={() => setModal('premium')} />}
 
       {screen === 'loading' && (
         <div className="loading-wrap">
