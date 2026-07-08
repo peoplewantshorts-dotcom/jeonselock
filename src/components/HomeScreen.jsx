@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { searchAddress } from '../api.js'
 import { formatMan } from './widgets.jsx'
+import { FEATURES } from '../features.js'
 
 const CHECK_CHIPS = [
   { label: '위반건축물' },
@@ -84,6 +85,18 @@ export default function HomeScreen({ onDiagnose }) {
       <p className="hero-sub">
         주소만 넣으면 공공데이터로 <b>위험 신호</b>를 걸러드려요
       </p>
+
+      {/* 집 정보 입력보다 먼저 — 이 서비스가 하는 3가지, 누구에게 필요한지 */}
+      <p className="menu-guide">이렇게 도와드려요 · 누구에게 필요한 기능인지</p>
+      <div className="menu-bar">
+        {FEATURES.map((f) => (
+          <div key={f.n} className="menu-item static">
+            <span className="menu-num">{f.n}</span>
+            <span className={`menu-tag who-${f.tag}`}>{f.who}</span>
+            <span className="menu-name">{f.short}</span>
+          </div>
+        ))}
+      </div>
 
       {/* 주소 + 보증금 입력 */}
       <section className="card">
