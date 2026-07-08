@@ -101,7 +101,18 @@ export default function AgentScreen({ onBack, onLock }) {
         </div>
       </section>
 
-      {/* 1) 표준 특약 자동 작성 — 중개사 핵심 도구 (주소 없어도 사용 가능) */}
+      {/* 1) 서류 발급 — 주소 바로 밑 */}
+      {selected ? (
+        <AgentIssueCard addr={selected} docSel={docSel} setDocSel={setDocSel} />
+      ) : (
+        <section className="card">
+          <p className="agent-desc" style={{ margin: 0 }}>
+            위에 주소를 먼저 입력하면 발급할 서류를 고를 수 있어요.
+          </p>
+        </section>
+      )}
+
+      {/* 2) 표준 특약 자동 작성 — 중개사 핵심 도구 */}
       <section className="card">
         <span className="cat-pill cat-purple">중개사 핵심</span>
         <h2 className="card-title">표준 특약 자동 작성</h2>
@@ -114,17 +125,6 @@ export default function AgentScreen({ onBack, onLock }) {
           표준 문구 예시예요. 실제 계약은 물건별 사정에 맞게 조정하고, 필요 시 법률 검토를 받으세요.
         </p>
       </section>
-
-      {/* 2) 서류 발급 (체크리스트) */}
-      {selected ? (
-        <AgentIssueCard addr={selected} docSel={docSel} setDocSel={setDocSel} />
-      ) : (
-        <section className="card">
-          <p className="agent-desc" style={{ margin: 0 }}>
-            위에 주소를 먼저 입력하면 발급할 서류를 고를 수 있어요.
-          </p>
-        </section>
-      )}
 
       {/* 3) 🔒 정밀진단 — 등기부 자동 분석 (업셀) */}
       <section className="card locked-card">
