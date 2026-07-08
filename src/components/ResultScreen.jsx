@@ -421,7 +421,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       {/* 확인 카드 — 공공데이터로 확인된 사실 + 중개사 확인 라우팅 (판정 아님) */}
       {result.floorMismatch && (
         <section className="card warn-card">
-          <div className="warn-title">🔎 서류에 없는 층이에요 — 중개사에게 확인하세요</div>
+          <div className="warn-title">서류에 없는 층이에요 — 중개사에게 확인하세요</div>
           <p className="warn-body">
             건축물대장상 이 건물은 <b>{building.floors}</b>인데, 신청하신 호수는{' '}
             <b>{result.unitFloor}층({unit})</b>이에요. 서류에 없는 층이라{' '}
@@ -432,7 +432,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       )}
       {building.violation && (
         <section className="card warn-card">
-          <div className="warn-title">🔎 건축물대장에 위반건축물로 등록돼 있어요</div>
+          <div className="warn-title">건축물대장에 위반건축물로 등록돼 있어요</div>
           <p className="warn-body">
             공공데이터(건축물대장)에 위반건축물로 표시돼 있어요. 이런 경우 전세대출·보증보험·전입신고에
             제약이 생길 수 있으니, <b>해소 계획을 중개사에게 확인</b>하세요. (이행강제금은 집주인이
@@ -442,7 +442,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       )}
       {result.trust && (
         <section className="card warn-card">
-          <div className="warn-title">🔎 소유자가 신탁회사예요 — 중개사에게 확인하세요</div>
+          <div className="warn-title">소유자가 신탁회사예요 — 중개사에게 확인하세요</div>
           <p className="warn-body">
             등기부상 소유권이 <b>{building.owner}</b>에 있어요. 이 경우 신탁사의 임대 동의가 필요할 수
             있어요. <b>신탁원부와 임대 동의 여부를 중개사에게 확인</b>하세요.
@@ -451,7 +451,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       )}
       {result.nonResidential && (
         <section className="card warn-card">
-          <div className="warn-title">🔎 서류상 &lsquo;주택&rsquo;이 아니에요</div>
+          <div className="warn-title">서류상 &lsquo;주택&rsquo;이 아니에요</div>
           <p className="warn-body">
             건축물대장 용도가 <b>{building.mainUse}</b>예요. 주거용으로 쓸 수 있는지, 보증보험 가입이
             되는지 <b>중개사에게 확인</b>하세요.
@@ -460,7 +460,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
       )}
       {flags.includes('overpriced') && (
         <section className="card warn-card">
-          <div className="warn-title">🔎 보증금이 최근 실거래가보다 높아요</div>
+          <div className="warn-title">보증금이 최근 실거래가보다 높아요</div>
           <p className="warn-body">
             국토부 실거래가 기준 최근 거래보다 보증금이 높아요. <b>적정 보증금인지, 보증금 보호
             방법을 중개사에게 확인</b>하세요.

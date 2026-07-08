@@ -4,13 +4,13 @@
 export function buildLeadText(lead) {
   return [
     '[월세락] 임차인 요청 정리',
-    `📍 매물: ${lead.address}${lead.unit ? ' · ' + lead.unit : ''}`,
-    `🏢 건물: ${lead.buildingLine}`,
-    `🚦 진단: ${lead.gradeLabel}${lead.warnings.length ? ' — ' + lead.warnings.join(', ') : ''}`,
-    `💰 보증금: ${lead.depositText}`,
-    `📝 요청 특약: ${lead.clauses.length ? lead.clauses.join(', ') : '없음'}`,
-    `🙋 임차인 메모: ${lead.memo || '없음'}`,
-    '※ 월세락 무료 진단 기반',
+    `· 매물: ${lead.address}${lead.unit ? ' · ' + lead.unit : ''}`,
+    `· 건물: ${lead.buildingLine}`,
+    `· 확인: ${lead.gradeLabel}${lead.warnings.length ? ' — ' + lead.warnings.join(', ') : ''}`,
+    `· 보증금: ${lead.depositText}`,
+    `· 요청 특약: ${lead.clauses.length ? lead.clauses.join(', ') : '없음'}`,
+    `· 임차인 메모: ${lead.memo || '없음'}`,
+    '※ 월세락 공공데이터 확인 기반',
   ].join('\n')
 }
 

@@ -14,23 +14,6 @@ const CHECK_CHIPS = [
   { label: '🔒 전세가율', locked: true },
 ]
 
-const FRAUD_CASES = [
-  {
-    icon: '🏚️',
-    title: '근생빌라 사기',
-    desc: '서류상 상가·사무실인 건물을 "주택"이라 속여 전세를 놓아요. 보증보험 가입이 거절돼요.',
-  },
-  {
-    icon: '🫙',
-    title: '깡통전세',
-    desc: '집값보다 보증금이 비싸요. 집이 경매로 넘어가면 보증금을 다 돌려받지 못해요.',
-  },
-  {
-    icon: '📜',
-    title: '신탁사기',
-    desc: '집 소유권이 신탁사에 있는데 집주인 행세를 하며 계약해요. 계약 자체가 무효가 될 수 있어요.',
-  },
-]
 
 export default function HomeScreen({ onDiagnose, onPickFeature }) {
   const [keyword, setKeyword] = useState('')
@@ -205,22 +188,6 @@ export default function HomeScreen({ onDiagnose, onPickFeature }) {
             <span key={c.label} className={`chip ${c.locked ? 'locked' : 'mint'}`}>
               {c.label}
             </span>
-          ))}
-        </div>
-      </section>
-
-      {/* 사기 유형 */}
-      <section className="card">
-        <h2 className="card-title">전세사기, 이렇게 당해요</h2>
-        <div className="fraud-list">
-          {FRAUD_CASES.map((f) => (
-            <div key={f.title} className="fraud-item">
-              <span className="fraud-icon">{f.icon}</span>
-              <div>
-                <h4>{f.title}</h4>
-                <p>{f.desc}</p>
-              </div>
-            </div>
           ))}
         </div>
       </section>
