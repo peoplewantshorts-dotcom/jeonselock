@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { RingGauge, CompareBars, DataTable, formatMan } from './widgets.jsx'
 
-const GRADE_CLASS = { safe: 'grade-safe', warn: 'grade-warn', danger: 'grade-danger' }
-const GRADE_DOT = { safe: '🟢', warn: '🟡', danger: '🔴' }
-
 // 건축물대장 각 항목이 뭘 뜻하는지 대학생 눈높이로 풀어주는 코너.
 // 대장에서 따온 실제 값(building) 옆에 한 줄 해설을 붙이고,
 // 마지막에 '지금 이 집' 판정(층수-호수 대조)을 콕 집어준다.
@@ -139,7 +136,8 @@ const CHECKLIST = [
 ]
 
 export default function ResultScreen({ addr, depositMan, unit, building, result, onBack, onLock }) {
-  const { score, grade, gradeLabel, summary, flags, recentPrice } = result
+  const { grades, counts, flags, recentPrice } = result
+  const [myVerdict, setMyVerdict] = useState(null) // 사용자가 스스로 내리는 종합 판단
 
   const baseRows = [
     { label: '주용도', value: building.mainUse, highlight: result.nonResidential },
@@ -163,7 +161,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
   ]
 
   const share = async () => {
-    const text = `[월세락] ${addr.road} 진단 결과: ${gradeLabel} (위험도 ${score}점)`
+    const text = `[월세락] ${addr.road} 진단 리포트 — 위험신호(C) ${counts.C}개 · 주의(B) ${counts.B}개`
     try {
       if (navigator.share) {
         await navigator.share({ title: '월세락 진단 결과', text, url: location.href })
@@ -186,28 +184,48 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         <span className="arrow">&lt;</span> 목록
       </button>
 
-      {/* 주소 + 등급 */}
+      {/* 주소 */}
       <div className="result-head">
         <h1 className="result-addr">{addr.road}</h1>
         {addr.buildingName && <p className="result-bname">{addr.detail}</p>}
-        <span className={`grade-badge ${GRADE_CLASS[grade]}`}>
-          {GRADE_DOT[grade]} {gradeLabel}
-        </span>
+        <p className="result-note">
+          항목별 등급을 확인하고, <b>종합 판단은 맨 아래에서 직접</b> 내려보세요.
+        </p>
       </div>
 
-      {/* 종합 위험 요약 */}
+      {/* 항목별 등급 (앱은 종합 위험도를 선고하지 않음) */}
       <section className="card">
-        <span className="cat-pill cat-mint">종합 진단</span>
-        <div className="innerbox">
-          <div className="gauge-row">
-            <RingGauge value={score} color={grade} centerText={`${score}점`} />
-            <div className="gauge-desc">
-              <h3>계약 전 위험도</h3>
-              <p>공공데이터 여러 항목에서 발견된 위험 신호를 점수로 합쳤어요.</p>
-            </div>
-          </div>
+        <span className="cat-pill cat-mint">항목별 등급</span>
+        <h2 className="card-title">항목별로 확인하세요</h2>
+        <div className="grade-legend">
+          <span>
+            <b className="lg lg-S">S</b> 안전
+          </span>
+          <span>
+            <b className="lg lg-A">A</b> 양호
+          </span>
+          <span>
+            <b className="lg lg-B">B</b> 주의
+          </span>
+          <span>
+            <b className="lg lg-C">C</b> 위험 신호
+          </span>
         </div>
-        <p className="summary-quote">{summary}</p>
+        <div className="grade-list">
+          {grades.map((g) => (
+            <div className="grade-row" key={g.key}>
+              <span className={`grade-chip g-${g.grade}`}>{g.grade}</span>
+              <div className="grade-text">
+                <h4>{g.key}</h4>
+                <p>{g.note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="grade-tip">
+          🧭 <b>종합 위험도는 앱이 정하지 않아요.</b> 각 등급과 아래 상세를 보고, 맨 아래에서 직접
+          판단해보세요.
+        </p>
       </section>
 
       {/* 기본정보 표 */}
@@ -390,6 +408,38 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
             </div>
           ))}
         </div>
+      </section>
+
+      {/* 종합 판단 — 사용자가 스스로 (앱은 대신하지 않음) */}
+      <section className="card">
+        <h2 className="card-title">이 집, 어떻게 보세요?</h2>
+        <p className="self-desc">
+          위 항목 등급(S·A·B·C)과 경고를 모두 보고, <b>이 집의 위험도는 직접</b> 판단해보세요. 앱은
+          결론을 대신 내리지 않아요.
+        </p>
+        <div className="self-buttons">
+          {[
+            { key: '안전', emoji: '🟢' },
+            { key: '주의', emoji: '🟡' },
+            { key: '위험', emoji: '🔴' },
+          ].map((o) => (
+            <button
+              key={o.key}
+              className={`self-btn ${myVerdict === o.key ? `active v-${o.key}` : ''}`}
+              onClick={() => setMyVerdict(o.key)}
+            >
+              {o.emoji} {o.key}
+            </button>
+          ))}
+        </div>
+        {myVerdict ? (
+          <p className="self-result">
+            스스로 <b>&lsquo;{myVerdict}&rsquo;</b>이라고 판단했어요. 최종 결정과 책임은 본인에게
+            있어요.
+          </p>
+        ) : (
+          <p className="self-hint">아직 판단 전이에요. 참고 자료로만 쓰고, 계약 전 전문가와 상담하세요.</p>
+        )}
       </section>
 
       {/* 하단 버튼 */}

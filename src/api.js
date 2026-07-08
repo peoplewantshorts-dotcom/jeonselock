@@ -67,38 +67,28 @@ export function parseUnitFloor(unit) {
   return parseInt(digits.slice(0, digits.length - 2), 10)
 }
 
+// 항목별 등급만 매기고, "종합 위험도" 판단은 사용자에게 넘긴다(앱이 선고하지 않음).
+// S = 안전 / A = 양호 / B = 주의 / C = 위험 신호
 export function diagnose(building, depositMan, unit = '') {
   const flags = []
-  let score = 0
 
   const nonResidential =
     building.isNonResidential ||
     NON_RESIDENTIAL_KEYWORDS.some((k) => (building.mainUse || '').includes(k))
-
-  if (building.violation) {
-    score += 40
-    flags.push('violation')
-  }
-  if (nonResidential) {
-    score += 30
-    flags.push('nonResidential')
-  }
+  if (building.violation) flags.push('violation')
+  if (nonResidential) flags.push('nonResidential')
 
   // 층수 vs 호수 불일치 → 서류에 없는 층 = 미신고 불법증축(옥탑) 위반건축물
   const unitFloor = parseUnitFloor(unit)
   let floorMismatch = false
   if (unitFloor != null && unitFloor > 0 && building.groundFloors && unitFloor > building.groundFloors) {
     floorMismatch = true
-    score += 45
     flags.push('illegalFloor')
   }
 
   // 신탁 소유 → 소유권이 신탁사에 있어 임대인과의 계약이 무효가 될 수 있음
   const trust = building.ownerType === '신탁' || /신탁/.test(building.owner || '')
-  if (trust) {
-    score += 35
-    flags.push('trust')
-  }
+  if (trust) flags.push('trust')
 
   // 시세 대비 보증금 (깡통 신호)
   const deals = building.recentDeals || []
@@ -106,44 +96,86 @@ export function diagnose(building, depositMan, unit = '') {
   let depositRatio = null
   if (recentPrice && depositMan > 0) {
     depositRatio = depositMan / recentPrice
-    if (depositRatio > 1.0) {
-      score += 30
-      flags.push('overpriced')
-    } else if (depositRatio >= 0.9) {
-      score += 15
-      flags.push('nearPrice')
-    }
+    if (depositRatio > 1.0) flags.push('overpriced')
+    else if (depositRatio >= 0.9) flags.push('nearPrice')
   }
 
-  // 노후 건물 (준공 30년 이상)
   const age = new Date().getFullYear() - building.builtYear
-  if (age >= 30) {
-    score += 10
-    flags.push('old')
-  }
+  if (age >= 30) flags.push('old')
 
-  score = Math.min(score, 95)
+  // ---- 항목별 S/A/B/C 등급 ----
+  const grades = []
 
-  let grade, gradeLabel, summary
-  if (score >= 55) {
-    grade = 'danger'
-    gradeLabel = '위험'
-    summary = '계약 전 반드시 짚어야 할 위험 신호가 있어요. 아래 경고를 꼭 확인하세요.'
-  } else if (score >= 25) {
-    grade = 'warn'
-    gradeLabel = '주의'
-    summary = '몇 가지 확인이 필요한 신호가 보여요. 경고 카드를 읽고 계약 조건을 점검하세요.'
+  grades.push({
+    key: '위반건축물',
+    grade: building.violation || floorMismatch ? 'C' : 'S',
+    note: building.violation
+      ? '대장에 위반건축물로 등록돼 있어요.'
+      : floorMismatch
+        ? '서류에 없는 층 — 미신고 위반 의심.'
+        : '대장에 위반 표시가 없어요.',
+  })
+
+  grades.push({
+    key: '건물 용도',
+    grade: nonResidential ? 'C' : 'S',
+    note: nonResidential
+      ? `${building.mainUse} — 주택이 아니라 보증보험이 어려워요.`
+      : `${building.mainUse} — 주거용 건물이에요.`,
+  })
+
+  grades.push({
+    key: '층수·호수',
+    grade: floorMismatch ? 'C' : unitFloor != null && unitFloor > 0 ? 'S' : 'A',
+    note: floorMismatch
+      ? `대장 ${building.floors}인데 ${unitFloor}층 호수 신청.`
+      : unitFloor != null && unitFloor > 0
+        ? '신청 호수가 대장 층수 안에 있어요.'
+        : '호수를 입력하면 불법증축을 대조해드려요.',
+  })
+
+  grades.push({
+    key: '준공·노후',
+    grade: age >= 30 ? 'C' : age >= 20 ? 'B' : age >= 10 ? 'A' : 'S',
+    note: `${building.builtYear}년 준공 · ${age}년차.`,
+  })
+
+  grades.push({
+    key: '소유자',
+    grade: trust ? 'C' : 'S',
+    note: trust ? `${building.owner} — 신탁 소유예요.` : `${building.owner || '소유자'} 명의예요.`,
+  })
+
+  let g6, n6
+  if (depositRatio == null) {
+    g6 = 'A'
+    n6 = '실거래 데이터가 부족해 판단이 어려워요.'
+  } else if (depositRatio > 1.0) {
+    g6 = 'C'
+    n6 = '보증금이 시세보다 높아요 (깡통 신호).'
+  } else if (depositRatio >= 0.9) {
+    g6 = 'B'
+    n6 = '보증금이 시세의 90%를 넘어요.'
+  } else if (depositRatio >= 0.7) {
+    g6 = 'A'
+    n6 = '보증금이 시세의 70~90% 수준이에요.'
   } else {
-    grade = 'safe'
-    gradeLabel = '안전'
-    summary = '공공데이터에서 큰 위험 신호는 발견되지 않았어요. 그래도 체크리스트는 꼭 지켜주세요.'
+    g6 = 'S'
+    n6 = '보증금이 시세보다 넉넉히 낮아요.'
   }
+  grades.push({ key: '시세 대비 보증금', grade: g6, note: n6 })
+
+  const counts = grades.reduce(
+    (a, g) => {
+      a[g.grade] = (a[g.grade] || 0) + 1
+      return a
+    },
+    { S: 0, A: 0, B: 0, C: 0 },
+  )
 
   return {
-    score,
-    grade,
-    gradeLabel,
-    summary,
+    grades,
+    counts,
     flags,
     nonResidential,
     depositRatio,

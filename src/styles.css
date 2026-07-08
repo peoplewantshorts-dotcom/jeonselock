@@ -439,6 +439,189 @@ input {
   line-height: 1.55;
 }
 
+/* ---------- 결과 상단 안내 ---------- */
+.result-note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
+.result-note b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ---------- 항목별 등급 (S/A/B/C) ---------- */
+.grade-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--sub);
+}
+
+.grade-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.grade-legend .lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.lg-S,
+.g-S {
+  background: var(--green);
+}
+.lg-A,
+.g-A {
+  background: var(--mint);
+}
+.lg-B,
+.g-B {
+  background: var(--amber);
+}
+.lg-C,
+.g-C {
+  background: var(--red);
+}
+
+.grade-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.grade-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 2px;
+  border-bottom: 1px solid var(--line);
+}
+
+.grade-row:last-child {
+  border-bottom: none;
+}
+
+.grade-chip {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.grade-text h4 {
+  font-size: 15.5px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  letter-spacing: -0.2px;
+}
+
+.grade-text p {
+  font-size: 13.5px;
+  color: var(--sub);
+  line-height: 1.45;
+}
+
+.grade-tip {
+  margin-top: 16px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: var(--inner);
+  font-size: 13.5px;
+  color: #4b5157;
+  line-height: 1.55;
+}
+
+.grade-tip b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ---------- 자가 종합 판단 ---------- */
+.self-desc {
+  font-size: 14.5px;
+  color: #4b5157;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.self-desc b {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.self-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.self-btn {
+  flex: 1;
+  padding: 15px 0;
+  border-radius: 14px;
+  border: 1.5px solid #e4e7ea;
+  background: var(--card);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text);
+  transition: all 0.12s;
+}
+
+.self-btn.active.v-안전 {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.self-btn.active.v-주의 {
+  background: var(--amber-soft);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.self-btn.active.v-위험 {
+  background: var(--red-soft);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.self-result {
+  margin-top: 14px;
+  font-size: 14.5px;
+  color: #4b5157;
+  line-height: 1.55;
+}
+
+.self-result b {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.self-hint {
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
 /* ---------- 건축물대장 쉬운 해설 코너 ---------- */
 .guide-intro {
   font-size: 14.5px;
