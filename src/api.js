@@ -112,7 +112,7 @@ export function diagnose(building, depositMan, unit = '') {
     note: building.violation
       ? '대장에 위반건축물로 등록돼 있어요.'
       : floorMismatch
-        ? '서류에 없는 층 — 미신고 위반 의심.'
+        ? '서류에 없는 층 — 중개사 확인 필요.'
         : '대장에 위반 표시가 없어요.',
   })
 
@@ -152,7 +152,7 @@ export function diagnose(building, depositMan, unit = '') {
     n6 = '실거래 데이터가 부족해 판단이 어려워요.'
   } else if (depositRatio > 1.0) {
     g6 = 'C'
-    n6 = '보증금이 시세보다 높아요 (깡통 신호).'
+    n6 = '보증금이 시세보다 높아요. 확인이 필요해요.'
   } else if (depositRatio >= 0.9) {
     g6 = 'B'
     n6 = '보증금이 시세의 90%를 넘어요.'

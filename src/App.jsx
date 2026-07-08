@@ -91,7 +91,7 @@ export default function App() {
               <>
                 <div className="modal-icon">🔔</div>
                 <h3>알림 준비 중이에요</h3>
-                <p>관심 주소에 새 위험 신호가 생기면 알려드리는 기능을 준비하고 있어요.</p>
+                <p>관심 주소에 새로 확인할 정보가 생기면 알려드리는 기능을 준비하고 있어요.</p>
               </>
             )}
             <button className="modal-close" onClick={() => setModal(null)}>

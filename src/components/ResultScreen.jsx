@@ -136,7 +136,7 @@ const SELF_CHECK = [
   {
     id: 'c2',
     text: '이 집에 잡혀 있는 빚(대출)이 얼마인지 물어봤어요',
-    hint: '집을 담보로 받은 대출이 많으면, 잘못될 때 내 보증금이 위험해요. 부동산에 “빚이 얼마 있어요?”라고 물어보세요.',
+    hint: '집을 담보로 받은 대출이 많으면, 잘못될 때 내 보증금을 못 돌려받을 수 있어요. 부동산에 “빚이 얼마 있어요?”라고 물어보세요.',
   },
   {
     id: 'c3',
@@ -553,7 +553,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
               />
               <div className="bars-side">
                 <div>
-                  <div className="metric-label">깡통전세 경고선</div>
+                  <div className="metric-label">확인 기준선</div>
                   <div className="metric-value">80%</div>
                 </div>
               </div>
@@ -564,7 +564,7 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           <span className="lock-icon">🔒</span>
           <span className="lock-title">전세가율 분석</span>
           <span className="lock-desc">
-            매매가 대비 전세금 비율을 동네 평균과 비교해 깡통전세 위험을 알려드려요.
+            매매가 대비 전세금 비율을 동네 평균과 비교해 깡통전세 여부를 알려드려요.
           </span>
           <button className="lock-btn" onClick={onLock}>
             정밀 진단으로 확인하기

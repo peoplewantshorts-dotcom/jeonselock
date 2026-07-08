@@ -157,7 +157,7 @@ export default function HomeScreen({ onDiagnose, onPickFeature }) {
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
-          placeholder="예: 301호 (건물 층수보다 높으면 경고)"
+          placeholder="예: 301호 (건물 층수보다 높으면 확인 필요)"
           autoComplete="off"
         />
 
