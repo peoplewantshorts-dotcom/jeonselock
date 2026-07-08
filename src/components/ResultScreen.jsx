@@ -35,7 +35,7 @@ function RegisterGuide({ building, result, unit }) {
       key: '위반건축물',
       value: building.violation ? '등록됨' : result.floorMismatch ? '미신고 의심' : '해당 없음',
       danger: building.violation || result.floorMismatch,
-      desc: "대장 맨 위에 노란 글씨로 '위반건축물' 도장이 찍혀 있으면 전입신고·대출·보증보험이 다 막혀요.",
+      desc: "대장 맨 위에 노란 글씨로 '위반건축물' 도장이 있으면, 벌금은 집주인이 내지만 세입자는 전세대출·보증보험이 막혀요.",
     },
     {
       key: '소유자',
@@ -226,9 +226,9 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
           <p className="warn-body">
             건축물대장상 이 건물은 <b>{building.floors}</b>인데, 신청하신 호수는{' '}
             <b>{result.unitFloor}층({unit})</b>이에요. 서류에 없는 층은 옥탑방 등을{' '}
-            <b>신고 없이 불법증축</b>한 경우가 많아요. 이런 방은 <b>전입신고·확정일자·전세대출·
-            보증보험이 모두 막히고</b>, 나중에 대장에 &lsquo;위반건축물&rsquo;로 등재되면 강제
-            철거·이행강제금 대상이 돼요.
+            <b>신고 없이 불법증축</b>한 경우가 많아요. 벌금(이행강제금)은 집주인이 무는 거라
+            세입자가 낼 돈은 없지만, 세입자에겐 <b>전입신고·확정일자·전세대출·전세보증보험이 모두
+            막히는</b> 게 진짜 문제예요.
           </p>
         </section>
       )}
@@ -236,8 +236,9 @@ export default function ResultScreen({ addr, depositMan, unit, building, result,
         <section className="card warn-card">
           <div className="warn-title">⚠️ 위반건축물로 등록된 건물이에요</div>
           <p className="warn-body">
-            불법 증축·개조로 적발된 건물이에요. <b>전입신고, 전세대출, 보증보험 가입이 막힐 수
-            있고</b>, 시정될 때까지 매년 이행강제금이 부과돼요.
+            불법 증축·개조로 적발된 건물이에요. <b>이행강제금(벌금)은 집주인이 무는 거라 세입자가
+            낼 돈은 없어요.</b> 하지만 세입자에겐 더 큰 문제가 있어요 — <b>전세대출·전세보증보험
+            가입이 막히고, 전입신고에도 불이익</b>이 생길 수 있어요.
           </p>
         </section>
       )}
